@@ -2,6 +2,7 @@ import {scheduleCallback} from 'scheduler';
 import {createWorkInProgress} from 'react-reconcile/src/ReactFiber';
 import {beginWork} from './ReactFiberBeginWork';
 import {completeWork} from './ReactFiberCompleteWork';
+import {MutationMask, NoFlags} from 'react-reconcile/src/ReactFiberFlags';
 
 let workInProgress = null;
 
@@ -19,7 +20,19 @@ function ensureRootIsScheduled(root) {
 function performConcurrentWorkOnRoot(root) {
   // 第一次以同步的方式渲染根节点，初次渲染的时候都是同步的，为了更快的给用户展现
   renderRootSync(root);
-  console.log('loop-done:', root);
+  // 提交阶段，执行副作用，修改真实DOM
+  const finishWork = root.current.alternate;
+  root.finishWork = finishWork;
+  commitRoot(root);
+}
+
+function commitRoot(root) {
+  const {finishWork} = root;
+  const subtreeHasEffect = (finishWork.subtreeFlags & MutationMask) !== NoFlags;
+  const rootHasEffect = (finishWork.flags & MutationMask) !== NoFlags;
+  if (subtreeHasEffect || rootHasEffect) {
+  }
+  root.current = finishWork;
 }
 
 function prepareFreshStack(root) {
