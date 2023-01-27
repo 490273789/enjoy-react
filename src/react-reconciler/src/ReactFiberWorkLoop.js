@@ -19,6 +19,7 @@ function ensureRootIsScheduled(root) {
 function performConcurrentWorkOnRoot(root) {
   // 第一次以同步的方式渲染根节点，初次渲染的时候都是同步的，为了更快的给用户展现
   renderRootSync(root);
+  console.log('loop-done:', root);
 }
 
 function prepareFreshStack(root) {

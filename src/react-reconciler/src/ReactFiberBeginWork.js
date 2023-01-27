@@ -10,7 +10,7 @@ import {
   reconcileChildFibers,
 } from 'react-reconcile/src/ReactChildFiber';
 
-import {shouldSetTextContent} from 'react-dom-bindings/src/ReactDOMHostConfig';
+import {shouldSetTextContent} from 'react-dom-bindings/src/client/ReactDOMHostConfig';
 
 /**
  * 根据新的虚拟DOM生成新的fiber链表
