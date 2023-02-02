@@ -12,3 +12,10 @@ console.log(res2.toString(2));
 // ^ 不相同为1
 const res3 = b ^ c;
 console.log(res3.toString(2));
+
+const f = 0b00000000000000000000000001;
+let e = 0b00000000000000000000000011;
+
+e &= ~f;
+
+console.log('', e.toString(2));

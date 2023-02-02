@@ -7,6 +7,7 @@ const RESERVED_PROPS = {
   __self: true,
   __source: true,
 };
+
 function hasValidateKey(config) {
   return config.key !== undefined;
 }
@@ -14,7 +15,8 @@ function hasValidateKey(config) {
 function hasValidateRef(config) {
   return config.ref !== undefined;
 }
-// 生成react元素，也就是传说中的虚拟DOM
+
+// 生成react元素，也就是传说中的虚拟DOM节点
 function ReactElement(type, key, ref, props) {
   return {
     $$typeof: REACT_ELEMENT_TYPE,
@@ -24,6 +26,13 @@ function ReactElement(type, key, ref, props) {
     props,
   };
 }
+
+/**
+ * react17之前为createReactElement()
+ * @param type
+ * @param config
+ * @returns {{ref, $$typeof: symbol, type, key, props}}
+ */
 export function jsxDEV(type, config) {
   let propName; // 属性名
   const props = {}; // 属性对象
@@ -38,6 +47,7 @@ export function jsxDEV(type, config) {
   }
 
   for (propName in config) {
+    // 如果是config本身的属性并且是RESERVED_PROPS（上文已处理过）中的属性
     if (
       hasOwnProperty.call(config, propName) &&
       !RESERVED_PROPS.hasOwnProperty(propName)
