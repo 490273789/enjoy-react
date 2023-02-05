@@ -12,6 +12,7 @@ function ReactDOMRoot(internalRoot) {
 // 渲染组件
 ReactDOMRoot.prototype.render = function (children) {
   const root = this._internalRoot;
+  root.containerInfo.innerHTML = '';
   updateContainer(children, root);
 };
 
