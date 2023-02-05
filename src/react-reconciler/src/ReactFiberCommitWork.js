@@ -97,7 +97,6 @@ function getHostSibling(fiber) {
 }
 
 function commitPlacement(finishedWork) {
-  debugger;
   // 确定父节点是真实DOM节点
   let parentFiber = getHostParentFiber(finishedWork);
   switch (parentFiber.tag) {

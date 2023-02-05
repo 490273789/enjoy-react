@@ -7,10 +7,88 @@ import {getEventTarget} from './getEventTarget';
 import {HostComponent} from 'react-reconcile/src/ReactWorkTags';
 import getListener from './getListener';
 
-SimpleEventPlugin.registerEvent();
+SimpleEventPlugin.registerEvents();
+
+function extractEvents(
+  dispatchQueue,
+  domEventName,
+  targetInst,
+  nativeEvent,
+  nativeEventTarget,
+  eventSystemFlags,
+  targetContainer
+) {
+  SimpleEventPlugin.extractEvents(
+    dispatchQueue,
+    domEventName,
+    targetInst,
+    nativeEvent,
+    nativeEventTarget,
+    eventSystemFlags,
+    targetContainer
+  );
+}
+
+function executeDispatch(listener, event, currentTarget) {
+  event.currentTarget = currentTarget;
+  listener(event);
+}
+
+function processDispatchQueueItemsInOrder(
+  event,
+  dispatchListeners,
+  inCapturePhase
+) {
+  if (inCapturePhase) {
+    for (let i = dispatchListeners.length - 1; i >= 0; i--) {
+      const {listener, currentTarget} = dispatchListeners[i];
+      if (event.isPropagetionStopped()) {
+        return;
+      }
+      executeDispatch(listener, event, currentTarget);
+    }
+  } else {
+    for (let i = 0; i < dispatchListeners.length; i++) {
+      const {listener, currentTarget} = dispatchListeners[i];
+      if (event.isPropagetionStopped()) {
+        return;
+      }
+      executeDispatch(listener, event, currentTarget);
+    }
+  }
+}
+
+function processDispatchQueue(dispatchQueue, eventSystemFlags) {
+  const inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
+  for (let i = 0; i < dispatchQueue.length; i++) {
+    const {event, listener} = dispatchQueue[i];
+    processDispatchQueueItemsInOrder(event, listener, inCapturePhase);
+  }
+}
+
+function dispatchEventsForPlugins(
+  domEventName,
+  eventSystemFlags,
+  nativeEvent,
+  targetInst,
+  targetContainer
+) {
+  const nativeEventTarget = getEventTarget(nativeEvent);
+  const dispatchQueue = [];
+  extractEvents(
+    dispatchQueue,
+    domEventName,
+    targetInst,
+    nativeEvent,
+    nativeEventTarget,
+    eventSystemFlags,
+    targetContainer
+  );
+  processDispatchQueue(dispatchQueue, eventSystemFlags);
+}
 
 const listeningMarker = `_reactListening` + Math.random().toString(36).slice(2);
-export function listenToAllSupportEvents(rootContainerElement) {
+export function listenToAllSupportedEvents(rootContainerElement) {
   if (!rootContainerElement[listeningMarker]) {
     rootContainerElement[listeningMarker] = true;
     // 遍历原生事件比如click
@@ -19,23 +97,6 @@ export function listenToAllSupportEvents(rootContainerElement) {
       listenToNativeEvent(domEventName, false, rootContainerElement);
     });
   }
-}
-
-export function listenToNativeEvent(
-  domEventName,
-  isCapturePhaseListener,
-  target
-) {
-  let eventSystemFlags = 0;
-  if (isCapturePhaseListener) {
-    eventSystemFlags |= IS_CAPTURE_PHASE;
-  }
-  addTrappedEventListener(
-    target,
-    domEventName,
-    eventSystemFlags,
-    isCapturePhaseListener
-  );
 }
 
 function addTrappedEventListener(
@@ -56,6 +117,23 @@ function addTrappedEventListener(
   }
 }
 
+export function listenToNativeEvent(
+  domEventName,
+  isCapturePhaseListener,
+  target
+) {
+  let eventSystemFlags = 0;
+  if (isCapturePhaseListener) {
+    eventSystemFlags |= IS_CAPTURE_PHASE;
+  }
+  addTrappedEventListener(
+    target,
+    domEventName,
+    eventSystemFlags,
+    isCapturePhaseListener
+  );
+}
+
 export function dispatchEventForPluginEventSystem(
   domEventName,
   eventSystemFlags,
@@ -63,7 +141,7 @@ export function dispatchEventForPluginEventSystem(
   targetInst,
   targetContainer
 ) {
-  dispatchEventForPlugins(
+  dispatchEventsForPlugins(
     domEventName,
     eventSystemFlags,
     nativeEvent,
@@ -72,45 +150,12 @@ export function dispatchEventForPluginEventSystem(
   );
 }
 
-function dispatchEventForPlugins(
-  domEventName,
-  eventSystemFlags,
-  nativeEvent,
-  targetInst,
-  targetContainer
-) {
-  const nativeEventTarget = getEventTarget(nativeEvent);
-  const dispatchQueue = [];
-  extractEvent(
-    dispatchQueue,
-    domEventName,
-    targetInst,
-    nativeEvent,
-    nativeEventTarget,
-    eventSystemFlags,
-    targetContainer
-  );
-  console.log('dispatchQueue', dispatchQueue);
-}
-
-function extractEvent(
-  dispatchQueue,
-  domEventName,
-  targetInst,
-  nativeEvent,
-  nativeEventTarget,
-  eventSystemFlags,
-  targetContainer
-) {
-  SimpleEventPlugin.extractEvents(
-    dispatchQueue,
-    domEventName,
-    targetInst,
-    nativeEvent,
-    nativeEventTarget,
-    eventSystemFlags,
-    targetContainer
-  );
+function createDispatchListener(instance, listener, currentTarget) {
+  return {
+    instance,
+    listener,
+    currentTarget,
+  };
 }
 
 export function accumulateSinglePhaseListeners(
@@ -128,7 +173,7 @@ export function accumulateSinglePhaseListeners(
     if (tag === HostComponent && stateNode !== null) {
       const listener = getListener(instance, reactEventName);
       if (listener) {
-        listeners.push(listener);
+        listeners.push(createDispatchListener(instance, listener, stateNode));
       }
     }
     instance = instance.return;

@@ -36,7 +36,6 @@ function dispatchDiscreteEvent(
   nativeEvent
 ) {
   dispatchEvent(domEventName, eventSystemFlags, container, nativeEvent);
-  console.log('nativeEvent', nativeEvent);
 }
 
 /**
