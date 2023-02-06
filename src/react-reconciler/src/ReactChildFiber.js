@@ -27,6 +27,7 @@ function createChildReconciler(shouldTrackSideEffects) {
     }
     return newFiber;
   }
+
   function createChild(returnFiber, newChild) {
     if (
       (typeof newChild === 'string' && newChild !== '') ||

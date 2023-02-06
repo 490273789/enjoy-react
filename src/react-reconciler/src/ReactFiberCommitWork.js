@@ -1,4 +1,5 @@
 import {
+  FunctionComponent,
   HostComponent,
   HostRoot,
   HostText,
@@ -61,10 +62,10 @@ function insertOrAppendPlacementNode(node, before, parent) {
   } else {
     const {child} = node;
     if (child !== null) {
-      insertOrAppendPlacementNode(child, parent);
-      let {sibling} = child.sibling;
+      insertOrAppendPlacementNode(child, before, parent);
+      let {sibling} = child;
       while (sibling !== null) {
-        insertOrAppendPlacementNode(sibling, parent);
+        insertOrAppendPlacementNode(sibling, before, parent);
         sibling = sibling.sibling;
       }
     }
@@ -124,6 +125,7 @@ function commitPlacement(finishedWork) {
  */
 export function commitMutationEffectsOnFiber(finishedWork, root) {
   switch (finishedWork.tag) {
+    case FunctionComponent:
     case HostRoot:
     case HostComponent:
     case HostText: {

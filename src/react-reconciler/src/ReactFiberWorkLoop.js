@@ -2,8 +2,19 @@ import {scheduleCallback} from 'scheduler';
 import {createWorkInProgress} from 'react-reconcile/src/ReactFiber';
 import {beginWork} from './ReactFiberBeginWork';
 import {completeWork} from './ReactFiberCompleteWork';
-import {MutationMask, NoFlags} from 'react-reconcile/src/ReactFiberFlags';
+import {
+  MutationMask,
+  NoFlags,
+  Placement,
+  Update,
+} from 'react-reconcile/src/ReactFiberFlags';
 import {commitMutationEffectsOnFiber} from './ReactFiberCommitWork';
+import {
+  FunctionComponent,
+  HostComponent,
+  HostRoot,
+  HostText,
+} from 'react-reconcile/src/ReactWorkTags';
 
 let workInProgress = null;
 
@@ -29,6 +40,7 @@ function performConcurrentWorkOnRoot(root) {
 
 function commitRoot(root) {
   const {finishedWork} = root;
+  printFinishedWork(finishedWork);
   const subtreeHasEffect =
     (finishedWork.subtreeFlags & MutationMask) !== NoFlags;
   const rootHasEffect = (finishedWork.flags & MutationMask) !== NoFlags;
@@ -93,4 +105,39 @@ function completeUnitOfWork(unitOfWork) {
     completedWork = returnFiber;
     workInProgress = completedWork;
   } while (completedWork !== null);
+}
+
+function printFinishedWork(fiber) {
+  let child = fiber.child;
+  while (child) {
+    printFinishedWork(child);
+    child = child.sibling;
+  }
+
+  if (fiber.flags !== 0) {
+    console.log(getFlags(fiber.flags), getTag(fiber.tag), fiber.memoizedProps);
+  }
+}
+
+function getTag(tag) {
+  switch (tag) {
+    case HostRoot:
+      return 'HostRoot';
+    case HostComponent:
+      return 'HostComponent';
+    case HostText:
+      return 'HostText';
+    case FunctionComponent:
+      return 'FunctionComponent';
+    default:
+      return tag;
+  }
+}
+function getFlags(flags) {
+  if (flags === Placement) {
+    return '插入';
+  } else if (flags === Update) {
+    return '更新';
+  }
+  return flags;
 }
