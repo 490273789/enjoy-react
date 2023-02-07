@@ -1,4 +1,4 @@
-import ReactCurrentDispatcher from 'react/src/ReactCurrentDispatcher';
+import ReactCurrentDispatcher from './ReactCurrentDispatcher';
 
 function resolveDispatcher() {
   return ReactCurrentDispatcher.current;

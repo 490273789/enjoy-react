@@ -15,6 +15,7 @@ import {
   HostRoot,
   HostText,
 } from 'react-reconcile/src/ReactWorkTags';
+import {finishQueueingConcurrentUpdates} from './ReactFiberConcurrentUpdates';
 
 let workInProgress = null;
 
@@ -52,6 +53,7 @@ function commitRoot(root) {
 
 function prepareFreshStack(root) {
   workInProgress = createWorkInProgress(root.current, null);
+  finishQueueingConcurrentUpdates();
 }
 
 function renderRootSync(root) {

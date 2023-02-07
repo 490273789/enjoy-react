@@ -1,4 +1,4 @@
-// import * as React from 'react';
+import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
 // let element = (
@@ -19,22 +19,32 @@ function reducer(state, action) {
   else return state;
 }
 function FunctionComponent() {
-  // const [number, dispatch] = React.useReducer(reducer, 0);
+  const [number1, dispatch1] = React.useReducer(reducer, 0);
+  const [number2, dispatch2] = React.useReducer(reducer, 0);
 
-  // return <button onClick={() => dispatch({type: 'add'})}>{number}</button>;
   return (
-    <h1
-      onClick={() => console.log('父冒泡')}
-      onClickCapture={() => console.log(`父捕获`)}>
-      hello,
-      <span
-        onClick={() => console.log('子冒泡')}
-        onClickCapture={() => console.log(`子捕获`)}
-        style={{color: 'red'}}>
-        world
-      </span>
-    </h1>
+    <button
+      onClick={() => {
+        dispatch1({type: 'add', payload: 1});
+        dispatch1({type: 'add', payload: 2});
+        dispatch1({type: 'add', payload: 3});
+      }}>
+      {number1}
+    </button>
   );
+  // return (
+  //   <h1
+  //     onClick={() => console.log('父冒泡')}
+  //     onClickCapture={() => console.log(`父捕获`)}>
+  //     hello,
+  //     <span
+  //       onClick={() => console.log('子冒泡')}
+  //       onClickCapture={() => console.log(`子捕获`)}
+  //       style={{color: 'red'}}>
+  //       world
+  //     </span>
+  //   </h1>
+  // );
 }
 
 // jsx写法
