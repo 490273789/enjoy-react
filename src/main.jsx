@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
-// let element = (
+// const element = (
 //   <h1
 //     onClick={() => console.log('父冒泡')}
 //     onClickCapture={() => console.log(`父捕获`)}>
@@ -14,6 +14,7 @@ import {createRoot} from 'react-dom/client';
 //     </span>
 //   </h1>
 // );
+
 function reducer(state, action) {
   if (action.type === 'add') return state + 1;
   else return state;
@@ -33,28 +34,29 @@ function FunctionComponent() {
     </button>
   );
   // return (
-  //   <h1
+  //   <h2
   //     onClick={() => console.log('父冒泡')}
   //     onClickCapture={() => console.log(`父捕获`)}>
   //     hello,
   //     <span
   //       onClick={() => console.log('子冒泡')}
   //       onClickCapture={() => console.log(`子捕获`)}
-  //       style={{color: 'red'}}>
-  //       world
+  //       style={{color: 'green'}}>
+  //       react
   //     </span>
-  //   </h1>
+  //   </h2>
   // );
 }
 
 // jsx写法
-let element = <FunctionComponent />;
+const element = <FunctionComponent />;
 
 // js写法
 // const element = React.createElement(FunctionComponent);
 // 根节点是直接获取DOM，所以不需要创建虚拟DOM，但是有自己的fiber
-const root = createRoot(document.querySelector('#root'));
 
+const root = createRoot(document.querySelector('#root'));
+// debugger;
 root.render(element);
 
 // jsx被编译后结果

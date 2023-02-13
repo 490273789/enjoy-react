@@ -16,7 +16,7 @@ export function finishQueueingConcurrentUpdates() {
       if (pending === null) {
         update.next = update;
       } else {
-        update.next = pending;
+        update.next = pending.next;
         pending.next = update;
       }
       queue.pending = update;
@@ -41,7 +41,7 @@ function getRootForUpdateFiber(sourceFiber) {
     node = parent;
     parent = node.return;
   }
-  return node.tags === HostRoot ? node.stateNode : null;
+  return node.tag === HostRoot ? node.stateNode : null;
 }
 
 /**

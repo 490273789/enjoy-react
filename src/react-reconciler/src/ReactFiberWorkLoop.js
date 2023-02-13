@@ -18,6 +18,7 @@ import {
 import {finishQueueingConcurrentUpdates} from './ReactFiberConcurrentUpdates';
 
 let workInProgress = null;
+let workInProgressRoot = null;
 
 export function scheduleUpdateOnFiber(root) {
   // 确保调度执行root上的更新
@@ -25,18 +26,22 @@ export function scheduleUpdateOnFiber(root) {
 }
 
 function ensureRootIsScheduled(root) {
+  if (workInProgressRoot) return;
+  workInProgressRoot = root;
   // 告诉浏览器要执行此函数
   scheduleCallback(performConcurrentWorkOnRoot.bind(null, root));
 }
 
 // 根据虚拟DOM创建fiber树，要创建真实的DOM节点，还需要把真实的DOM节点插入容器
 function performConcurrentWorkOnRoot(root) {
+  debugger;
   // 第一次以同步的方式渲染根节点，初次渲染的时候都是同步的，为了更快的给用户展现
   renderRootSync(root);
   // 提交阶段，执行副作用，修改真实DOM
   const finishedWork = root.current.alternate;
   root.finishedWork = finishedWork;
   commitRoot(root);
+  workInProgressRoot = null;
 }
 
 function commitRoot(root) {
@@ -75,7 +80,7 @@ function workLoopSync() {
 function performUnitOfWork(unitOfWork) {
   // 获取新fiber对应的老fiber
   const current = unitOfWork.alternate;
-  // 完成当前fiber的子fiber链表构建
+  // 完成当前fiber的子fiber链表构建，获取子元素，创建子元素的fiber，返回这个fiber
   const next = beginWork(current, unitOfWork);
   unitOfWork.memoizedProps = unitOfWork.pendingProps;
   if (next === null) {
