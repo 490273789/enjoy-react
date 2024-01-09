@@ -19,7 +19,7 @@ function hasValidateRef(config) {
   return config.ref !== undefined;
 }
 
-// 生成react元素，也就是传说中的虚拟DOM节点?
+// 生成react元素，也就是虚拟DOM
 function ReactElement(type, key, ref, props) {
   return {
     $$typeof: REACT_ELEMENT_TYPE,

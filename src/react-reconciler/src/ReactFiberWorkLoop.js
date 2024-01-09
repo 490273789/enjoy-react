@@ -34,7 +34,7 @@ function ensureRootIsScheduled(root) {
 
 // 根据虚拟DOM创建fiber树，要创建真实的DOM节点，还需要把真实的DOM节点插入容器
 function performConcurrentWorkOnRoot(root) {
-  debugger;
+  // debugger;
   // 第一次以同步的方式渲染根节点，初次渲染的时候都是同步的，为了更快的给用户展现
   renderRootSync(root);
   // 提交阶段，执行副作用，修改真实DOM

@@ -4,6 +4,11 @@ import {initialUpdateQueue} from './ReactFiberClassUpdateQueue';
 function FiberRootNode(containerInfo) {
   this.containerInfo = containerInfo;
 }
+/**
+ * 创建fiber的根节点
+ * @param {*} containerInfo 容器
+ * @returns FiberRootNode的实例对象
+ */
 export function createFiberRoot(containerInfo) {
   // 创建FiberRootNode实例
   const root = new FiberRootNode(containerInfo);

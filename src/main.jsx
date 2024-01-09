@@ -48,15 +48,26 @@ function FunctionComponent() {
   // );
 }
 
+const element = (
+  <h1>
+    hello,
+    <span style={{color: 'red'}} className="text" id="span" key="1">
+      world
+    </span>
+  </h1>
+);
+
 // jsx写法
-const element = <FunctionComponent />;
+// const element = <FunctionComponent />;
 
 // js写法
 // const element = React.createElement(FunctionComponent);
 // 根节点是直接获取DOM，所以不需要创建虚拟DOM，但是有自己的fiber
-
-const root = createRoot(document.querySelector('#root'));
+console.log('虚拟DOM:', element);
 // debugger;
+const root = createRoot(document.querySelector('#root'));
+console.log(root);
+
 root.render(element);
 
 // jsx被编译后结果

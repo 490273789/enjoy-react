@@ -1,4 +1,5 @@
 {
+  // 解决vscode路径引入提示问题
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {

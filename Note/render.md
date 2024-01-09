@@ -1,6 +1,7 @@
 ## React初始化流程
 
 #### 初始化结构
+
 ```javascript
 const element = (
   <h1

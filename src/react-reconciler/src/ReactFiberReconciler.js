@@ -2,7 +2,11 @@ import {createFiberRoot} from 'react-reconcile/src/ReactFiberRoot';
 import {createUpdate, enqueueUpdate} from './ReactFiberClassUpdateQueue';
 import {scheduleUpdateOnFiber} from './ReactFiberWorkLoop';
 
-// 创建容器
+/**
+ * 创建容器
+ * @param {*} containerInfo 容器
+ * @returns
+ */
 export function createContainer(containerInfo) {
   return createFiberRoot(containerInfo);
 }

@@ -1,9 +1,12 @@
 // 在react17之前,babel转换的是老的写法
 const babel = require('@babel/core');
 const sourceCode = `
-<h1> 
-  hello <span style={{ color: 'red' }}>world</span>
-</h1>
+<h1>
+    hello,
+    <span style={{color: 'red'}} className="text" id="span" key="1">
+      world
+    </span>
+  </h1>
 `;
 /** 将jsx转换为js代码 */
 const result = babel.transform(sourceCode, {
@@ -12,14 +15,14 @@ const result = babel.transform(sourceCode, {
 
 console.log(result.code);
 
-// classic
+// classic - 老版本 17之前
 // /*#__PURE__*/React.createElement("h1", null, "hello ", /*#__PURE__*/React.createElement("span", {
 //   style: {
 //     color: 'red'
 //   }
 // }, "world"));
 
-/** automatic */
+/** automatic - 新版*/
 // import {jsx as _jsx} from 'react/jsx-runtime';
 // import {jsxs as _jsxs} from 'react/jsx-runtime';
 // /*#__PURE__*/ _jsxs('h1', {

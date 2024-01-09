@@ -6,7 +6,7 @@ const {ReactCurrentDispatcher} = ReactSharedInternals;
 // 当前正在渲染中的fiber
 let currentlyRenderingFiber = null;
 let workInProgressHook = null;
-const currentHook = null;
+let currentHook = null;
 const HooksDispatcherOnMount = {
   useReducer: mountReducer,
 };
@@ -34,7 +34,7 @@ function mountReducer(reducer, initialArg) {
   const dispatch = (queue.dispatch = dispatchReducerAction.bind(
     null,
     currentlyRenderingFiber,
-    queue
+    queue,
   ));
   return [hook.memoizedState, dispatch];
 }
