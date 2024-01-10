@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function sleep(duration) {
+        for (let t = Date.now(); Date.now() - t <= duration; ) {}
+      }
+      const works = [
+        () => {
+          console.log('task 1: start');
+          sleep(2);
+          console.log('task 1: end');
+        },
+        () => {
+          console.log('task 2: start');
+          sleep(2000);
+          console.log('task 2: end');
+        },
+        () => {
+          console.log('task 3: start');
+          sleep(5);
+          console.log('task 3: end');
+        },
+        () => {
+          console.log('task 4: start');
+          sleep(9);
+          console.log('task 4: end');
+        },
+      ];
+
+      requestIdleCallback(workLoop);
+      function workLoop(deadline) {
+        // 一帧使16。6毫秒，浏览器执行完高优任务后，如果还有时间，会执行workLoop方法
+        // timeRemaining获取此桢剩下的时间
+        console.log(`本桢的剩余时间是：`, deadline.timeRemaining());
+        // 每一帧的调用，都会循环执行 performUnitOfWork
+        while (deadline.timeRemaining() > 1 && works.length > 0) {
+          performUnitOfWork();
+        }
+        if (works.length > 0) {
+          console.log(
+            `只剩下${deadline.timeRemaining()},等待浏览器下次空闲的时候调用`,
+          );
+          requestIdleCallback(workLoop);
+        }
+      }
+
+      function performUnitOfWork() {
+        let work = works.shift();
+        // 每个人物就是js执行的最小单位，使不能打断的
+        // 这种方式称为合作式调度
+        work();
+      }
+    </script>
+  </body>
+</html>

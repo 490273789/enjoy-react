@@ -2,11 +2,15 @@ import {markUpdateLaneFromFiberToRoot} from './ReactFiberConcurrentUpdates';
 import assign from 'shared/assign';
 
 export const UpdateState = 0;
+
+/**
+ * 给每个fiber初始化一个更新队列
+ * @param {*} fiber fiber节点
+ */
 export function initialUpdateQueue(fiber) {
   const queue = {
     shared: {
-      // 指向最新的update
-      pending: null,
+      pending: null, // 指向一个循环列表的最新的update
     },
   };
   fiber.updateQueue = queue;
