@@ -4,20 +4,30 @@ import {Placement} from 'react-reconcile/src/ReactFiberFlags';
 import isArray from 'shared/isArray';
 
 /**
- *
+ * 创建子组件的协调器
  * @param shouldTrackSideEffects 是否跟踪副作用
  */
 function createChildReconciler(shouldTrackSideEffects) {
+  /**
+   * 协调单个节点
+   * @param {*} returnFiber
+   * @param {*} currentFirstFiber
+   * @param {*} element
+   * @returns fiber
+   */
   function reconcileSingleElement(returnFiber, currentFirstFiber, element) {
+    // TODO: 初次渲染直接创建
+    // 根据虚拟DOM创建fiber
     const create = createFiberFromElement(element);
+    // 将创建好的fiber节点的return指向父fiber
     create.return = returnFiber;
     return create;
   }
 
   /**
-   * 设置副作用
+   * 单个子节点 - 设置副作用
    * @param newFiber
-   * @returns {*}
+   * @returns {*} fiber
    */
   function placeSingleChild(newFiber) {
     // 说明要添加副作用
@@ -28,7 +38,27 @@ function createChildReconciler(shouldTrackSideEffects) {
     return newFiber;
   }
 
+  /**
+   * 多个子节点 - 记录fiber的位置以及fiber的副作用
+   * @param {*} newFiber
+   * @param {*} newIdx
+   */
+  function placeChild(newFiber, newIdx) {
+    newFiber.index = newIdx; // 当前是第几个子元素
+    if (shouldTrackSideEffects) {
+      // 父fiber如果是初次挂载，shouldTrackSideEffects为false，不需要添加flags
+      newFiber.flags |= Placement;
+    }
+  }
+
+  /**
+   * 根据不同类型的虚拟DOM创建不同类型的fiber
+   * @param {*} returnFiber 父fiber
+   * @param {*} newChild 子虚拟DOM
+   * @returns {*} 子fiber
+   */
   function createChild(returnFiber, newChild) {
+    // 如果是文本类型
     if (
       (typeof newChild === 'string' && newChild !== '') ||
       typeof newChild === 'number'
@@ -37,6 +67,7 @@ function createChildReconciler(shouldTrackSideEffects) {
       created.return = returnFiber;
       return created;
     }
+    // 如果使react元素类型
     if (typeof newChild === 'object' && newChild !== null) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE: {
@@ -50,21 +81,20 @@ function createChildReconciler(shouldTrackSideEffects) {
     }
   }
 
-  function placeChild(newFiber, newIdx) {
-    newFiber.index = newIdx;
-    if (shouldTrackSideEffects) {
-      // 父fiber如果是初次挂载，shouldTrackSideEffects为false，不需要添加flags
-      newFiber.flags |= Placement;
-    }
-  }
-
+  /**
+   * 多个子fiber，比较子fiber DOM-DIFF 就是用当前的子fiber链表和新的虚拟DOM进行比较
+   * @param {*} returnFiber 新的父Fiber
+   * @param {*} currentFirstFiber 当前的fiber的第一个子fiber
+   * @param {*} newChildren 新的虚拟DOM
+   * @returns {*} fiber链表
+   */
   function reconcileChildrenArray(returnFiber, currentFirstFiber, newChildren) {
-    let resultingFirstChild = null; // 返回第一个新儿子
+    let resultingFirstChild = null; // 第一个新儿子
     let previousNewFiber = null; // 上一个的新的fiber
-    let newIdx = 0;
+    let newIdx = 0; // 记录children的长度
     for (; newIdx < newChildren.length; newIdx++) {
       const newFiber = createChild(returnFiber, newChildren[newIdx]);
-      if (newFiber === null) continue;
+      if (newFiber === null) continue; // 如果不是文本节点，也不是react元素跳过
       placeChild(newFiber, newIdx);
       if (previousNewFiber === null) {
         // 如果没有previousNewFiber说明是第一个fiber(大儿子)
@@ -79,22 +109,23 @@ function createChildReconciler(shouldTrackSideEffects) {
   }
 
   /**
-   * 比较子Fibers - DOM-DIFF
+   * 比较子Fibers - DOM-DIFF 用当前的子fiber链表和新的子fiber进行对比
    * @param returnFiber 新的父Fiber
-   * @param currentFirstFiber 老fiber第一个fiber
+   * @param currentFirstFiber 当前fiber第一个子fiber
    * @param newChild 新的子虚拟DOM
    */
   function reconcileChildFibers(returnFiber, currentFirstFiber, newChild) {
+    // TODO:现在只考虑新节点只有一个的情况
     if (typeof newChild === 'object' && newChild !== null) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
           return placeSingleChild(
-            reconcileSingleElement(returnFiber, currentFirstFiber, newChild)
+            reconcileSingleElement(returnFiber, currentFirstFiber, newChild),
           );
         default:
           break;
       }
-
+      // 子节点不止一个
       if (isArray(newChild)) {
         return reconcileChildrenArray(returnFiber, currentFirstFiber, newChild);
       }
@@ -110,8 +141,8 @@ function createChildReconciler(shouldTrackSideEffects) {
   return reconcileChildFibers;
 }
 
-// 有老父fiber
+// 当前有挂在的fiber
 export const reconcileChildFibers = createChildReconciler(true);
 
-// 没有老父fiber，初次挂载
+// 当前没有已挂载fiber，初次挂载
 export const mountChildFibers = createChildReconciler(false);

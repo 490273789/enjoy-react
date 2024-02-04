@@ -12,7 +12,7 @@ function ReactDOMRoot(internalRoot) {
   this._internalRoot = internalRoot;
 }
 
-// 渲染组件
+// 渲染组件 render方法
 ReactDOMRoot.prototype.render = function (children) {
   const root = this._internalRoot;
   root.containerInfo.innerHTML = ''; // 更新容器前清空根节点下的内容

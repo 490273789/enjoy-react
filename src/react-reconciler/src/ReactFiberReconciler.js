@@ -14,7 +14,7 @@ export function createContainer(containerInfo) {
 /**
  * 更新容器
  * @param element 子元素的虚拟DOM
- * @param container 根节点
+ * @param container 根节点 FiberRootNode.containerInfo = div#root
  */
 export function updateContainer(element, container) {
   // 根fiber
@@ -23,7 +23,7 @@ export function updateContainer(element, container) {
   const update = createUpdate();
   // 需要更新的虚拟DOM
   update.payload = {element}; // h1
-  // 把更新添加到跟fiber的更新队列上
+  // 把更新添加到根fiber的更新队列上
   const root = enqueueUpdate(current, update);
   scheduleUpdateOnFiber(root);
 }

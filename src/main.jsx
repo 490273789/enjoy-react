@@ -67,7 +67,7 @@ console.log('虚拟DOM:', element);
 // debugger;
 const root = createRoot(document.querySelector('#root'));
 console.log(root);
-
+// 把虚拟dom渲染到容器中
 root.render(element);
 
 // jsx被编译后结果

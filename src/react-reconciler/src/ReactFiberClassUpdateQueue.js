@@ -25,7 +25,12 @@ export function createUpdate() {
   return update;
 }
 
-// 添加到更新队列
+/**
+ * 添加到更新队列
+ * @param {*} fiber
+ * @param {*} update 需要更新的内容
+ * @returns
+ */
 export function enqueueUpdate(fiber, update) {
   const updateQueue = fiber.updateQueue;
   const pending = updateQueue.shared.pending;
@@ -38,12 +43,16 @@ export function enqueueUpdate(fiber, update) {
     // 然后让原来队列的最后一个的next指向新的update
     pending.next = update;
   }
-  // fiber的pending指向新的update（最后一个跟新节点）
+  // fiber的pending指向新的update（最后一个更新节点）
   updateQueue.shared.pending = update;
   // 返回根节点，从当前节点一直到根节点
   return markUpdateLaneFromFiberToRoot(fiber);
 }
 
+/**
+ * 根据老状态和更新队列中的更新计算新的状态
+ * @param {*} fiber 要计算的fiber
+ */
 export function processUpdateQueue(fiber) {
   const queue = fiber.updateQueue;
   const pendingQueue = queue.shared.pending;
@@ -54,6 +63,7 @@ export function processUpdateQueue(fiber) {
     const firstPendingUpdate = lastPendingUpdate.next;
     // 剪断循环链表
     lastPendingUpdate.next = null;
+    // 计算新的状态
     let newState = fiber.memoizedState;
     let update = firstPendingUpdate;
     while (update) {
