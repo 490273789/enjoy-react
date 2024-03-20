@@ -72,6 +72,12 @@ function insertOrAppendPlacementNode(node, before, parent) {
   }
 }
 
+/**
+ * 获取最近的弟弟的真实节点
+ * 插入的锚点
+ * @param {*} fiber
+ * @returns
+ */
 function getHostSibling(fiber) {
   let node = fiber;
 
@@ -120,8 +126,8 @@ function commitPlacement(finishedWork) {
 
 /**
  * 遍历fiber树，执行fiber上的副作用
- * @param finishedWork
- * @param root
+ * @param finishedWork 当前的fiber树
+ * @param root 根节点
  */
 export function commitMutationEffectsOnFiber(finishedWork, root) {
   switch (finishedWork.tag) {
@@ -129,7 +135,7 @@ export function commitMutationEffectsOnFiber(finishedWork, root) {
     case HostRoot:
     case HostComponent:
     case HostText: {
-      // 先遍历他们的子节点，处理他们的子节点上的副作用
+      // 先递归遍历他们的子节点，处理他们的子节点上的副作用
       recursivelyTraverseMutationEffects(root, finishedWork);
       // 在处理自己身上的副作用
       commitReconciliationEffects(finishedWork);

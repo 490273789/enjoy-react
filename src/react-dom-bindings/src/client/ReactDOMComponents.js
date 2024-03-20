@@ -4,6 +4,13 @@ import {setValueForProperties} from './DOMPropertiesOperations';
 
 const STYLE = 'style';
 const CHILDREN = 'children';
+
+/**
+ * 设置dom的属性值，主要是dom操作
+ * @param {*} domElement
+ * @param {*} tag
+ * @param {*} nextProps
+ */
 export function setInitialDOMProperties(domElement, tag, nextProps) {
   for (const propKey in nextProps) {
     if (nextProps.hasOwnProperty(propKey)) {

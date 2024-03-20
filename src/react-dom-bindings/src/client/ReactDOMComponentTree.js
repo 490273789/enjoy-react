@@ -20,7 +20,7 @@ export function getClosestInstanceFromNode(targetNode) {
  * @param hostInst
  * @param node
  */
-export function precacheFiberNode(hostInst, node) {
+export function preCacheFiberNode(hostInst, node) {
   node[internalInstanceKey] = hostInst;
 }
 
