@@ -6,6 +6,16 @@ import {IS_CAPTURE_PHASE} from 'react-dom-bindings/src/events/EventSystemFlags';
 import {accumulateSinglePhaseListeners} from '../DOMPluginEventSystem';
 import {SyntheticMouseEvent} from './SyntheticEvent';
 
+/**
+ * 收集事件
+ * @param {*} dispatchQueue 事件的派发队列
+ * @param {*} domEventName 原生事件名称，如：click
+ * @param {*} targetInst 当前节点的fiber
+ * @param {*} nativeEvent 原生事件
+ * @param {*} nativeEventTarget 事件源的真实dom
+ * @param {*} eventSystemFlags 事件的标志：0 - 冒泡， 4 - 捕获
+ * @param {*} targetContainer 根容器
+ */
 function extractEvents(
   dispatchQueue,
   domEventName,
@@ -17,12 +27,13 @@ function extractEvents(
 ) {
   const reactName = topLevelEventsToReactNames.get(domEventName);
   let SyntheticEventCtor;
+  // 获取不同事件类型的合成事件
   switch (domEventName) {
     case 'click':
-      SyntheticEventCtor = SyntheticMouseEvent;
+      SyntheticEventCtor = SyntheticMouseEvent; // click的合成事件
   }
   const isCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
-  const listener = accumulateSinglePhaseListeners(
+  const listeners = accumulateSinglePhaseListeners(
     targetInst,
     reactName,
     nativeEvent.type,
@@ -30,8 +41,8 @@ function extractEvents(
   );
 
   let reactEventType = domEventName;
-  // 如果有要执行的监听函数的话[onClickCapture, onClickCapture]
-  if (listener.length > 0) {
+  // 如果有要执行的监听函数- listener：[{listeners, instance, currentTarget }]
+  if (listeners.length > 0) {
     const event = new SyntheticEventCtor(
       reactName,
       reactEventType,
@@ -41,7 +52,7 @@ function extractEvents(
     );
     dispatchQueue.push({
       event,
-      listener,
+      listeners,
     });
   }
   // debugger;

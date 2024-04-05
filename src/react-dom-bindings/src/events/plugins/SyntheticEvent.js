@@ -12,6 +12,12 @@ const MouseEventInterface = {
   clientX: 0,
   clientY: 0,
 };
+
+/**
+ * 创建一个合成事件
+ * @param {*} Interface 不同和成事件的接口
+ * @returns 返回这个合成事件
+ */
 function createSyntheticEvent(Interface) {
   // 合成事件的基类
   function SyntheticBaseEvent(

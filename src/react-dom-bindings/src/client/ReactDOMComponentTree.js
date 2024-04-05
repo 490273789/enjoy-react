@@ -3,8 +3,8 @@ const internalPropsKey = '__reactProps$' + randomKey;
 const internalInstanceKey = '__reactFiber$' + randomKey;
 
 /**
- * 取缓存在dom上的fiber
- * @param targetNode
+ * 获取挂载在dom上的fiber
+ * @param targetNode 原生节点
  * @returns {*}
  */
 export function getClosestInstanceFromNode(targetNode) {
@@ -16,9 +16,9 @@ export function getClosestInstanceFromNode(targetNode) {
 }
 
 /**
- * 提前缓存fiber的实例到dom上
- * @param hostInst
- * @param node
+ * 将fiber的实例挂载到dom上
+ * @param hostInst 节点的fiber
+ * @param node 节点的原生DOM
  */
 export function preCacheFiberNode(hostInst, node) {
   node[internalInstanceKey] = hostInst;

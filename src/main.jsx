@@ -1,19 +1,19 @@
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
-// const element = (
-//   <h1
-//     onClick={() => console.log('父冒泡')}
-//     onClickCapture={() => console.log(`父捕获`)}>
-//     hello,
-//     <span
-//       onClick={() => console.log('子冒泡')}
-//       onClickCapture={() => console.log(`子捕获`)}
-//       style={{color: 'red'}}>
-//       world
-//     </span>
-//   </h1>
-// );
+const element = (
+  <h1
+    onClick={() => console.log('父冒泡')}
+    onClickCapture={() => console.log(`父捕获`)}>
+    hello,
+    <span
+      onClick={() => console.log('子冒泡')}
+      onClickCapture={() => console.log(`子捕获`)}
+      style={{color: 'red'}}>
+      world
+    </span>
+  </h1>
+);
 
 function reducer(state, action) {
   if (action.type === 'add') return state + 1;
@@ -48,14 +48,14 @@ function FunctionComponent() {
   // );
 }
 
-const element = (
-  <h1>
-    hello,
-    <span style={{color: 'red'}} className="text" id="span" key="1">
-      world
-    </span>
-  </h1>
-);
+// const element = (
+//   <h1>
+//     hello,
+//     <span style={{color: 'red'}} className="text" id="span" key="1">
+//       world
+//     </span>
+//   </h1>
+// );
 
 // jsx写法
 // const element = <FunctionComponent />;

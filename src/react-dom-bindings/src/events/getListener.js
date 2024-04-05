@@ -3,6 +3,7 @@ import {getFiberCurrentPropsFromNode} from 'react-dom-bindings/src/client/ReactD
 export default function getListener(inst, registrationName) {
   const {stateNode} = inst;
   if (stateNode === null) return null;
+  // 获取真实dom上缓存的props信息
   const props = getFiberCurrentPropsFromNode(stateNode);
   if (props === null) return null;
   const listener = props[registrationName];
