@@ -122,6 +122,7 @@ function completeUnitOfWork(unitOfWork) {
   } while (completedWork !== null);
 }
 
+/** 打印副作用 */
 function printFinishedWork(fiber) {
   let child = fiber.child;
   while (child) {

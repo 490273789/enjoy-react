@@ -16,7 +16,7 @@ function extractEvents(
   nativeEvent,
   nativeEventTarget,
   eventSystemFlags,
-  targetContainer
+  targetContainer,
 ) {
   SimpleEventPlugin.extractEvents(
     dispatchQueue,
@@ -25,7 +25,7 @@ function extractEvents(
     nativeEvent,
     nativeEventTarget,
     eventSystemFlags,
-    targetContainer
+    targetContainer,
   );
 }
 
@@ -37,7 +37,7 @@ function executeDispatch(listener, event, currentTarget) {
 function processDispatchQueueItemsInOrder(
   event,
   dispatchListeners,
-  inCapturePhase
+  inCapturePhase,
 ) {
   if (inCapturePhase) {
     for (let i = dispatchListeners.length - 1; i >= 0; i--) {
@@ -71,7 +71,7 @@ function dispatchEventsForPlugins(
   eventSystemFlags,
   nativeEvent,
   targetInst,
-  targetContainer
+  targetContainer,
 ) {
   const nativeEventTarget = getEventTarget(nativeEvent);
   const dispatchQueue = [];
@@ -82,7 +82,7 @@ function dispatchEventsForPlugins(
     nativeEvent,
     nativeEventTarget,
     eventSystemFlags,
-    targetContainer
+    targetContainer,
   );
   processDispatchQueue(dispatchQueue, eventSystemFlags);
 }
@@ -103,12 +103,12 @@ function addTrappedEventListener(
   targetContainer,
   domEventName,
   eventSystemFlags,
-  isCapturePhaseListener
+  isCapturePhaseListener,
 ) {
   const listener = createEventListenerWrapperWithPriority(
     targetContainer,
     domEventName,
-    eventSystemFlags
+    eventSystemFlags,
   );
   if (isCapturePhaseListener) {
     addEventCaptureListener(targetContainer, domEventName, listener);
@@ -120,7 +120,7 @@ function addTrappedEventListener(
 export function listenToNativeEvent(
   domEventName,
   isCapturePhaseListener,
-  target
+  target,
 ) {
   let eventSystemFlags = 0;
   if (isCapturePhaseListener) {
@@ -130,7 +130,7 @@ export function listenToNativeEvent(
     target,
     domEventName,
     eventSystemFlags,
-    isCapturePhaseListener
+    isCapturePhaseListener,
   );
 }
 
@@ -139,14 +139,14 @@ export function dispatchEventForPluginEventSystem(
   eventSystemFlags,
   nativeEvent,
   targetInst,
-  targetContainer
+  targetContainer,
 ) {
   dispatchEventsForPlugins(
     domEventName,
     eventSystemFlags,
     nativeEvent,
     targetInst,
-    targetContainer
+    targetContainer,
   );
 }
 
@@ -162,7 +162,7 @@ export function accumulateSinglePhaseListeners(
   targetFiber,
   reactName,
   nativeEventType,
-  isCapturePhase
+  isCapturePhase,
 ) {
   const captureName = reactName + 'Capture';
   const reactEventName = isCapturePhase ? captureName : reactName;

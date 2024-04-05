@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="root">
+      <div class="parent">
+        <div class="child">点击</div>
+      </div>
+    </div>
+
+    <script>
+      /** 定义事件函数 */
+      const rootBubble = () => console.log('react-root-冒泡');
+      const parentBubble = () => console.log('react-parent-冒泡');
+      const childBubble = () => console.log('react-child-冒泡');
+      const rootCapture = () => console.log('react-root-捕获');
+      const parentCapture = () => console.log('react-parent-捕获');
+      const childCapture = () => console.log('react-child-捕获');
+
+      /** 获取dom对象添加属性 */
+      // root处理
+      const oRoot = document.getElementById('root');
+      // 绑定react事件
+      oRoot.onClick = rootBubble;
+      oRoot.onClickCapture = rootCapture;
+      oRoot.addEventListener('click', (event) => dispatchEvent(event, false));
+      oRoot.addEventListener(
+        'click',
+        (event) => dispatchEvent(event, true),
+        true,
+      );
+
+      // parent处理
+      const oParent = document.getElementsByClassName('parent')[0];
+      // 绑定react事件
+      oParent.onClick = parentBubble;
+      oParent.onClickCapture = parentCapture;
+
+      // 绑定原生事件
+      oParent.addEventListener('click', () => console.log('原生-parent-冒泡'));
+      oParent.addEventListener(
+        'click',
+        () => console.log('原生-parent-捕获'),
+        true,
+      );
+
+      // child处理
+      const oChild = document.getElementsByClassName('child')[0];
+      // 绑定react事件
+      oChild.onClick = childBubble;
+      oChild.onClickCapture = childCapture;
+      // oChild.addEventListener('click', (event) => dispatchEvent(event, false));
+
+      // 绑定原生事件
+      oChild.addEventListener('click', () => console.log('原生-child-冒泡'));
+      oChild.addEventListener(
+        'click',
+        () => console.log('原生-child-捕获'),
+        true,
+      );
+
+      const dispatchEvent = (event, isCapture) => {
+        const paths = [];
+        let target = event.target;
+
+        while (target) {
+          paths.push(target);
+          target = target.parentNode;
+        }
+
+        if (isCapture) {
+          for (let i = paths.length - 1; i >= 0; i--) {
+            const handle = paths[i].onClickCapture;
+            handle && handle(event);
+          }
+        }
+        if (!isCapture) {
+          for (let i = 0; i < paths.length; i++) {
+            const handle = paths[i].onClick;
+            handle && handle(event);
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
