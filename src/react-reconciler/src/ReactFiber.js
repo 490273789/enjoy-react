@@ -31,15 +31,15 @@ function FiberNode(tag, pendingProps, key) {
   this.memoizedState = null; // 上一次生成子节点之后保持在内存中的局部状态.
   this.dependencies = null; // 该 fiber 节点所依赖的(contexts, events)等
 
-  this.mode = mode; // 二进制位 Bitfield,继承自父节点,影响本 fiber 节点及其子树中所有节点. 与 react 应用的运行模式有关(有 ConcurrentMode, BlockingMode, NoMode 等选项).
+  // this.mode = mode; // 二进制位 Bitfield,继承自父节点,影响本 fiber 节点及其子树中所有节点. 与 react 应用的运行模式有关(有 ConcurrentMode, BlockingMode, NoMode 等选项).
 
   // effects相关
   this.flags = NoFlags; // 标志位, 副作用标记，在ReactFiberFlags.js中定义了所有的标志位.18.2以前会收集effects，18.2以后删除了这个机制
   this.subtreeFlags = NoFlags; // 子节点的副作用标识，性能优化字段，比如如果这个字段是0，那么标识子节点没有副作用，就不需要处理子节点的副作用了
   this.deletions = null; // 存储将要被删除的子节点. 默认未开启
 
-  this.lanes = NoLanes; // 本 fiber 节点所属的优先级, 创建 fiber 的时候设置.
-  this.childLanes = NoLanes; // 子节点所属的优先级
+  // this.lanes = NoLanes; // 本 fiber 节点所属的优先级, 创建 fiber 的时候设置.
+  // this.childLanes = NoLanes; // 子节点所属的优先级
 
   this.alternate = null; // 双缓存的替身，指向内存中的另一个 fiber, 每个被更新过 fiber 节点在内存中都是成对出现(current 和 workInProgress)
 }

@@ -1,4 +1,4 @@
-import {allNativeEvents} from './EventRegisty';
+import {allNativeEvents} from './EventRegistry';
 import * as SimpleEventPlugin from './plugins/SimpleEventPlugin';
 import {IS_CAPTURE_PHASE} from './EventSystemFlags';
 import {createEventListenerWrapperWithPriority} from './ReactDOMEventListener';
@@ -42,7 +42,7 @@ function processDispatchQueueItemsInOrder(
   if (inCapturePhase) {
     for (let i = dispatchListeners.length - 1; i >= 0; i--) {
       const {listener, currentTarget} = dispatchListeners[i];
-      if (event.isPropagetionStopped()) {
+      if (event.isPropagationStopped()) {
         return;
       }
       executeDispatch(listener, event, currentTarget);
@@ -50,7 +50,7 @@ function processDispatchQueueItemsInOrder(
   } else {
     for (let i = 0; i < dispatchListeners.length; i++) {
       const {listener, currentTarget} = dispatchListeners[i];
-      if (event.isPropagetionStopped()) {
+      if (event.isPropagationStopped()) {
         return;
       }
       executeDispatch(listener, event, currentTarget);

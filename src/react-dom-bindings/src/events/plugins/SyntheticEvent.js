@@ -12,14 +12,14 @@ const MouseEventInterface = {
   clientX: 0,
   clientY: 0,
 };
-function creatSyntheticEvent(Interface) {
+function createSyntheticEvent(Interface) {
   // 合成事件的基类
   function SyntheticBaseEvent(
     reactName,
     reactEventType,
     targetInst,
     nativeEvent,
-    nativeEventTarget
+    nativeEventTarget,
   ) {
     this._reactName = reactName;
     this._targetInst = targetInst;
@@ -32,7 +32,7 @@ function creatSyntheticEvent(Interface) {
       this[propName] = Interface[propName];
     }
     this.isDefaultPrevented = functionThatReturnFalse;
-    this.isPropagetionStopped = functionThatReturnFalse;
+    this.isPropagationStopped = functionThatReturnFalse;
     return this;
   }
 
@@ -53,9 +53,9 @@ function creatSyntheticEvent(Interface) {
       } else {
         event.cancelBubble = true;
       }
-      this.isPropagetionStopped = functionThatReturnTrue();
+      this.isPropagationStopped = functionThatReturnTrue();
     },
   });
   return SyntheticBaseEvent;
 }
-export const SyntheticMouseEvent = creatSyntheticEvent(MouseEventInterface);
+export const SyntheticMouseEvent = createSyntheticEvent(MouseEventInterface);

@@ -13,7 +13,7 @@ function extractEvents(
   nativeEvent,
   nativeEventTarget,
   eventSystemFlags,
-  targetContainer
+  targetContainer,
 ) {
   const reactName = topLevelEventsToReactNames.get(domEventName);
   let SyntheticEventCtor;
@@ -26,7 +26,7 @@ function extractEvents(
     targetInst,
     reactName,
     nativeEvent.type,
-    isCapturePhase
+    isCapturePhase,
   );
 
   let reactEventType = domEventName;
@@ -37,7 +37,7 @@ function extractEvents(
       reactEventType,
       null,
       nativeEvent,
-      nativeEventTarget
+      nativeEventTarget,
     );
     dispatchQueue.push({
       event,
