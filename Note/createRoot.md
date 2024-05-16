@@ -4,7 +4,9 @@
 
 1. 首先会进入创建根容器的流程
 2. 创建ReactDOMRoot实例
+
    ![Alt text](image.png)
+
 3. ReactDOMRoot实例添加render方法
 
 ```javascript

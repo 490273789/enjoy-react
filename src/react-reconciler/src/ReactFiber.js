@@ -2,9 +2,9 @@ import {
   HostComponent,
   HostRoot,
   HostText,
-  IndeterminateComponent,
-} from './ReactWorkTags';
-import {NoFlags} from './ReactFiberFlags';
+  IndeterminateComponent
+} from "./ReactWorkTags";
+import {NoFlags} from "./ReactFiberFlags";
 
 // 每种虚拟DOM都会有自己Fiber Tag类型
 function FiberNode(tag, pendingProps, key) {
@@ -115,7 +115,7 @@ export function createFiberFromElement(element) {
 function createFiberFromTypeAndProps(type, key, pendingProps) {
   // 初始为不确定的tag
   let tag = IndeterminateComponent;
-  if (typeof type === 'string') {
+  if (typeof type === "string") {
     // span div的fiber类型是原生组件（标签）
     tag = HostComponent;
   }

@@ -1,5 +1,5 @@
-import {markUpdateLaneFromFiberToRoot} from './ReactFiberConcurrentUpdates';
-import assign from 'shared/assign';
+import {markUpdateLaneFromFiberToRoot} from "./ReactFiberConcurrentUpdates";
+import assign from "shared/assign";
 
 export const UpdateState = 0;
 
@@ -10,8 +10,8 @@ export const UpdateState = 0;
 export function initialUpdateQueue(fiber) {
   const queue = {
     shared: {
-      pending: null, // 指向一个循环列表的最新的update
-    },
+      pending: null // 指向一个循环列表的最新的update
+    }
   };
   fiber.updateQueue = queue;
 }

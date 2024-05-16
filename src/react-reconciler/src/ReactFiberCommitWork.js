@@ -2,13 +2,13 @@ import {
   FunctionComponent,
   HostComponent,
   HostRoot,
-  HostText,
-} from 'react-reconcile/src/ReactWorkTags';
-import {MutationMask, Placement} from 'react-reconcile/src/ReactFiberFlags';
+  HostText
+} from "react-reconcile/src/ReactWorkTags";
+import {MutationMask, Placement} from "react-reconcile/src/ReactFiberFlags";
 import {
   appendChild,
-  insertBefore,
-} from 'react-dom-bindings/src/client/ReactDOMHostConfig';
+  insertBefore
+} from "react-dom-bindings/src/client/ReactDOMHostConfig";
 
 function recursivelyTraverseMutationEffects(root, parentFiber) {
   if (parentFiber.subtreeFlags & MutationMask) {

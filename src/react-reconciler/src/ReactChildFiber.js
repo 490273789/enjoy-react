@@ -1,7 +1,7 @@
-import {REACT_ELEMENT_TYPE} from 'shared/ReactSymbols';
-import {createFiberFromElement, createFiberFromText} from './ReactFiber';
-import {Placement} from 'react-reconcile/src/ReactFiberFlags';
-import isArray from 'shared/isArray';
+import {REACT_ELEMENT_TYPE} from "shared/ReactSymbols";
+import {createFiberFromElement, createFiberFromText} from "./ReactFiber";
+import {Placement} from "react-reconcile/src/ReactFiberFlags";
+import isArray from "shared/isArray";
 
 /**
  * 创建子组件的协调器
@@ -60,15 +60,15 @@ function createChildReconciler(shouldTrackSideEffects) {
   function createChild(returnFiber, newChild) {
     // 如果是文本类型
     if (
-      (typeof newChild === 'string' && newChild !== '') ||
-      typeof newChild === 'number'
+      (typeof newChild === "string" && newChild !== "") ||
+      typeof newChild === "number"
     ) {
       const created = createFiberFromText(`${newChild}`);
       created.return = returnFiber;
       return created;
     }
     // 如果使react元素类型
-    if (typeof newChild === 'object' && newChild !== null) {
+    if (typeof newChild === "object" && newChild !== null) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE: {
           const created = createFiberFromElement(newChild);
@@ -116,11 +116,11 @@ function createChildReconciler(shouldTrackSideEffects) {
    */
   function reconcileChildFibers(returnFiber, currentFirstFiber, newChild) {
     // TODO:现在只考虑新节点只有一个的情况
-    if (typeof newChild === 'object' && newChild !== null) {
+    if (typeof newChild === "object" && newChild !== null) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
           return placeSingleChild(
-            reconcileSingleElement(returnFiber, currentFirstFiber, newChild),
+            reconcileSingleElement(returnFiber, currentFirstFiber, newChild)
           );
         default:
           break;
@@ -131,8 +131,8 @@ function createChildReconciler(shouldTrackSideEffects) {
       }
     }
     if (
-      (typeof newChild === 'string' && newChild !== '') ||
-      typeof newChild === 'number'
+      (typeof newChild === "string" && newChild !== "") ||
+      typeof newChild === "number"
     ) {
       return null;
     }

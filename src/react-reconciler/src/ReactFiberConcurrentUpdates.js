@@ -1,4 +1,4 @@
-import {HostRoot} from './ReactWorkTags';
+import {HostRoot} from "./ReactWorkTags";
 
 const concurrentQueue = [];
 let concurrentQueuesIndex = 0;

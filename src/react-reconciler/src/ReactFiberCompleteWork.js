@@ -1,16 +1,16 @@
-import logger from 'shared/logger';
+import logger from "shared/logger";
 import {
   HostComponent,
   HostRoot,
-  HostText,
-} from 'react-reconcile/src/ReactWorkTags';
+  HostText
+} from "react-reconcile/src/ReactWorkTags";
 import {
   createTextInstance,
   createInstance,
   appendInitialChild,
-  finalizeInitialChild,
-} from 'react-dom-bindings/src/client/ReactDOMHostConfig';
-import {NoFlags} from 'react-reconcile/src/ReactFiberFlags';
+  finalizeInitialChild
+} from "react-dom-bindings/src/client/ReactDOMHostConfig";
+import {NoFlags} from "react-reconcile/src/ReactFiberFlags";
 
 /**
  * 将fiber的所有子节点对应的真实节点挂在到自己的DOM上

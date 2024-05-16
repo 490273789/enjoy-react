@@ -39,7 +39,7 @@ function ReactElement(type, key, ref, props) {
 export function jsxDEV(type, config) {
   let propName; // 属性名 - style class 等
   const props = {}; // 属性对象 - style class 等
-  let key = null; // 每个虚拟DOM都一个可选的key属性，用来区分一个父节点下的不同子节点
+  let key = null; // 每个虚拟DOM都一个可选的key属性，用来区分同一个父节点下的不同子节点
   let ref = null; // 可以获取真实DOM
 
   // 校验key,获取key

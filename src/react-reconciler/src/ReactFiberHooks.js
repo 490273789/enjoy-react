@@ -1,6 +1,6 @@
-import ReactSharedInternals from 'shared/ReactSharedInternals';
-import {scheduleUpdateOnFiber} from 'react-reconcile/src/ReactFiberWorkLoop';
-import {enqueueCurrentHookUpdate} from './ReactFiberConcurrentUpdates';
+import ReactSharedInternals from "shared/ReactSharedInternals";
+import {scheduleUpdateOnFiber} from "react-reconcile/src/ReactFiberWorkLoop";
+import {enqueueCurrentHookUpdate} from "./ReactFiberConcurrentUpdates";
 
 const {ReactCurrentDispatcher} = ReactSharedInternals;
 // 当前正在渲染中的fiber
@@ -8,11 +8,11 @@ let currentlyRenderingFiber = null;
 let workInProgressHook = null;
 let currentHook = null;
 const HooksDispatcherOnMount = {
-  useReducer: mountReducer,
+  useReducer: mountReducer
 };
 
 const HooksDispatcherOnUpdate = {
-  useReducer: updateReducer,
+  useReducer: updateReducer
 };
 
 /**
@@ -27,14 +27,14 @@ function mountReducer(reducer, initialArg) {
   // 一个useReducer多次调用dispatch，会共同使用这个更新队列
   const queue = {
     pending: null,
-    dispatch: null,
+    dispatch: null
   };
   hook.queue = queue;
 
   const dispatch = (queue.dispatch = dispatchReducerAction.bind(
     null,
     currentlyRenderingFiber,
-    queue,
+    queue
   ));
   return [hook.memoizedState, dispatch];
 }
@@ -78,7 +78,7 @@ function dispatchReducerAction(fiber, queue, action) {
   // 每个hook中会存放一个更新队列
   const update = {
     action,
-    next: null,
+    next: null
   };
   // 把当前最新的更新添加到更新队列中，并返回当前的fiber
   const root = enqueueCurrentHookUpdate(fiber, queue, update);
@@ -100,7 +100,7 @@ function updateWorkInProgressHook() {
   const newHook = {
     memoizedState: currentHook.memoizedState,
     queue: currentHook.queue,
-    next: null,
+    next: null
   };
   if (workInProgressHook === null) {
     // memoizedState指向链表的头部
@@ -120,7 +120,7 @@ function mountWorkInProgressHook() {
   const hook = {
     memoizedState: null, // hook状态
     queue: null, // 存放本hook的更新队列， queue.pending = update
-    next: null, // 指向下一个hook，一个函数可能有多个hook，他们会组成一个单向列表
+    next: null // 指向下一个hook，一个函数可能有多个hook，他们会组成一个单向列表
   };
   if (workInProgressHook === null) {
     // memoizedState指向链表的头部

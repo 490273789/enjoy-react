@@ -1,21 +1,21 @@
-import {scheduleCallback} from 'scheduler';
-import {createWorkInProgress} from 'react-reconcile/src/ReactFiber';
-import {beginWork} from './ReactFiberBeginWork';
-import {completeWork} from './ReactFiberCompleteWork';
+import {scheduleCallback} from "scheduler";
+import {createWorkInProgress} from "react-reconcile/src/ReactFiber";
+import {beginWork} from "./ReactFiberBeginWork";
+import {completeWork} from "./ReactFiberCompleteWork";
 import {
   MutationMask,
   NoFlags,
   Placement,
-  Update,
-} from 'react-reconcile/src/ReactFiberFlags';
-import {commitMutationEffectsOnFiber} from './ReactFiberCommitWork';
+  Update
+} from "react-reconcile/src/ReactFiberFlags";
+import {commitMutationEffectsOnFiber} from "./ReactFiberCommitWork";
 import {
   FunctionComponent,
   HostComponent,
   HostRoot,
-  HostText,
-} from 'react-reconcile/src/ReactWorkTags';
-import {finishQueueingConcurrentUpdates} from './ReactFiberConcurrentUpdates';
+  HostText
+} from "react-reconcile/src/ReactWorkTags";
+import {finishQueueingConcurrentUpdates} from "./ReactFiberConcurrentUpdates";
 
 let workInProgress = null;
 let workInProgressRoot = null;
@@ -138,22 +138,22 @@ function printFinishedWork(fiber) {
 function getTag(tag) {
   switch (tag) {
     case HostRoot:
-      return 'HostRoot';
+      return "HostRoot";
     case HostComponent:
-      return 'HostComponent';
+      return "HostComponent";
     case HostText:
-      return 'HostText';
+      return "HostText";
     case FunctionComponent:
-      return 'FunctionComponent';
+      return "FunctionComponent";
     default:
       return tag;
   }
 }
 function getFlags(flags) {
   if (flags === Placement) {
-    return '插入';
+    return "插入";
   } else if (flags === Update) {
-    return '更新';
+    return "更新";
   }
   return flags;
 }

@@ -1,6 +1,6 @@
-import {createFiberRoot} from 'react-reconcile/src/ReactFiberRoot';
-import {createUpdate, enqueueUpdate} from './ReactFiberClassUpdateQueue';
-import {scheduleUpdateOnFiber} from './ReactFiberWorkLoop';
+import {createFiberRoot} from "react-reconcile/src/ReactFiberRoot";
+import {createUpdate, enqueueUpdate} from "./ReactFiberClassUpdateQueue";
+import {scheduleUpdateOnFiber} from "./ReactFiberWorkLoop";
 
 /**
  * 创建容器

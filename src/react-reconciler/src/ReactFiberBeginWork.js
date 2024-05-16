@@ -1,18 +1,18 @@
-import logger, {indent} from 'shared/logger';
+import logger, {indent} from "shared/logger";
 import {
   HostRoot,
   HostComponent,
   HostText,
   IndeterminateComponent,
-  FunctionComponent,
-} from 'react-reconcile/src/ReactWorkTags';
-import {processUpdateQueue} from './ReactFiberClassUpdateQueue';
+  FunctionComponent
+} from "react-reconcile/src/ReactWorkTags";
+import {processUpdateQueue} from "./ReactFiberClassUpdateQueue";
 import {
   mountChildFibers,
-  reconcileChildFibers,
-} from 'react-reconcile/src/ReactChildFiber';
-import {renderWithHooks} from './ReactFiberHooks';
-import {shouldSetTextContent} from 'react-dom-bindings/src/client/ReactDOMHostConfig';
+  reconcileChildFibers
+} from "react-reconcile/src/ReactChildFiber";
+import {renderWithHooks} from "./ReactFiberHooks";
+import {shouldSetTextContent} from "react-dom-bindings/src/client/ReactDOMHostConfig";
 
 /**
  * 根据新的虚拟DOM生成新的fiber链表
@@ -29,7 +29,7 @@ function reconcileChildren(current, workInProgress, nextChildren) {
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
-      nextChildren,
+      nextChildren
     );
   }
 }
@@ -91,7 +91,7 @@ function updateHostComponent(current, workInProgress) {
  * @returns {null}
  */
 export function beginWork(current, workInProgress) {
-  logger(' '.repeat(indent.number) + 'beginWork', workInProgress);
+  logger(" ".repeat(indent.number) + "beginWork", workInProgress);
   indent.number += 2;
   switch (workInProgress.tag) {
     // 组件有两种，一种是类组件一种是函数组件，但是他们都是函数
@@ -100,7 +100,7 @@ export function beginWork(current, workInProgress) {
       return mountIndeterminateComponent(
         current,
         workInProgress,
-        workInProgress.type,
+        workInProgress.type
       );
     case HostRoot: // 根fiber
       return updateHostRoot(current, workInProgress);
