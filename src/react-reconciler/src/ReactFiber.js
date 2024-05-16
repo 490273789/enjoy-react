@@ -61,7 +61,7 @@ function createFiber(tag, pendingProps, key) {
  */
 export function createHostRootFiber() {
   return createFiber(HostRoot, null, null);
-} // 根Fiber的tag类型
+}
 
 /**
  * 基于当前fiber或新的属性创建新的fiber

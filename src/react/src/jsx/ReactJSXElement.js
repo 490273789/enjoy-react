@@ -1,12 +1,12 @@
-import hasOwnProperty from 'shared/hasOwnProperty';
-import {REACT_ELEMENT_TYPE} from 'shared/ReactSymbols';
+import hasOwnProperty from "shared/hasOwnProperty";
+import {REACT_ELEMENT_TYPE} from "shared/ReactSymbols";
 
 /** 保留属性 */
 const RESERVED_PROPS = {
   key: true,
   ref: true,
   __self: true,
-  __source: true,
+  __source: true
 };
 
 /** 校验key属性是否合法,不为undefined即合法 */
@@ -26,7 +26,7 @@ function ReactElement(type, key, ref, props) {
     type, // div span
     key, // 唯一标识
     ref, // 获取真实元素
-    props, // id children style 等
+    props // id children style 等
   };
 }
 
@@ -38,7 +38,7 @@ function ReactElement(type, key, ref, props) {
  */
 export function jsxDEV(type, config) {
   let propName; // 属性名 - style class 等
-  const props = {}; // 属性对象 - style class 等
+  const props = {}; // 属性对象 - style class children等
   let key = null; // 每个虚拟DOM都一个可选的key属性，用来区分同一个父节点下的不同子节点
   let ref = null; // 可以获取真实DOM
 
@@ -53,7 +53,6 @@ export function jsxDEV(type, config) {
   }
 
   for (propName in config) {
-    // 如果是config本身的属性 且 不是RESERVED_PROPS（上文已处理过）中的属性
     if (
       hasOwnProperty.call(config, propName) &&
       !RESERVED_PROPS.hasOwnProperty(propName)

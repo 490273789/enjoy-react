@@ -4,7 +4,7 @@ import assign from "shared/assign";
 export const UpdateState = 0;
 
 /**
- * 给每个fiber初始化一个更新队列
+ * 给fiber初始化一个更新队列
  * @param {*} fiber fiber节点
  */
 export function initialUpdateQueue(fiber) {
@@ -26,9 +26,11 @@ export function createUpdate() {
 }
 
 /**
- * 添加到更新队列
+ * 将update对象添加到更新队列
+ * updateQueue的数据结构：
+ * 是一个环形链表，pending指向最后一个update
  * @param {*} fiber
- * @param {*} update 需要更新的内容
+ * @param {*} update 更新对象
  * @returns
  */
 export function enqueueUpdate(fiber, update) {
@@ -38,14 +40,11 @@ export function enqueueUpdate(fiber, update) {
     // 第一次更新，自己指向自己
     update.next = update;
   } else {
-    // 当前update的next指向第一个update
     update.next = pending.next;
-    // 然后让原来队列的最后一个的next指向新的update
     pending.next = update;
   }
   // fiber的pending指向新的update（最后一个更新节点）
   updateQueue.shared.pending = update;
-  // 返回根节点，从当前节点一直到根节点
   return markUpdateLaneFromFiberToRoot(fiber);
 }
 

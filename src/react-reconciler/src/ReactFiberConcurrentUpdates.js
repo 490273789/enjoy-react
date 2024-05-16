@@ -59,7 +59,7 @@ function enqueueUpdate(fiber, queue, update) {
 /**
  * 标记更新的lane，找到根节点
  * @param sourceFiber
- * @returns {null|FiberRootNode|*|null}
+ * @returns {null|FiberRootNode}
  */
 export function markUpdateLaneFromFiberToRoot(sourceFiber) {
   let node = sourceFiber; // 当前fiber

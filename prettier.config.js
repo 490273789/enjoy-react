@@ -1,5 +1,5 @@
-module.exports = {
+export default {
   bracketSpacing: false,
   jsxBracketSameLine: true,
-  printWidth: 80
+  printWidth: 80,
 };

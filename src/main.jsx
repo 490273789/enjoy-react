@@ -47,11 +47,10 @@ function FunctionComponent() {
   //   </h2>
   // );
 }
-
 const element = (
   <h1>
     hello,
-    <span id="id" key="1" className="text" style={{color: "red"}}>
+    <span id="id" className="text" style={{color: "red"}}>
       world
     </span>
   </h1>
@@ -62,9 +61,11 @@ const element = (
 
 // js写法
 // const element = React.createElement(FunctionComponent);
-// 根节点是直接获取DOM，所以不需要创建虚拟DOM，但是有自己的fiber
+
+// 根节点是真实DOM，所以不需要创建虚拟DOM，但是有自己的fiber
 console.log("虚拟DOM:", element);
 // debugger;
+// createRoot返回 ReactDOMRoot 实例上面又render方法 和 根节点的Fiber
 const root = createRoot(document.querySelector("#root"));
 console.log(root);
 // 把虚拟dom渲染到容器中
@@ -92,3 +93,27 @@ root.render(element);
 //     }),
 //   ],
 // });
+
+// const ele = {
+//   $$typeof: Symbol(react.element),
+//   type: "h1",
+//   key: null,
+//   ref: null,
+//   props: {
+//     children: [
+//       "hello,",
+//       {
+//         $$typeof: Symbol(react.element),
+//         type: "span",
+//         key: null,
+//         ref: null,
+//         props: {
+//           id: "id",
+//           className: "text",
+//           style: {color: "red"},
+//           children: "world"
+//         }
+//       }
+//     ]
+//   }
+// };

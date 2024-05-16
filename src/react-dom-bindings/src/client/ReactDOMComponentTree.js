@@ -1,6 +1,6 @@
 const randomKey = Math.random().toString(36).slice(2);
-const internalPropsKey = '__reactProps$' + randomKey;
-const internalInstanceKey = '__reactFiber$' + randomKey;
+const internalPropsKey = "__reactProps$" + randomKey;
+const internalInstanceKey = "__reactFiber$" + randomKey;
 
 /**
  * 获取挂载在dom上的fiber
