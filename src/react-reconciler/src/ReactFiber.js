@@ -2,7 +2,7 @@ import {
   HostComponent,
   HostRoot,
   HostText,
-  IndeterminateComponent
+  IndeterminateComponent,
 } from "./ReactWorkTags";
 import {NoFlags} from "./ReactFiberFlags";
 

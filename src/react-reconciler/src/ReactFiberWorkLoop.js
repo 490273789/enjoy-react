@@ -6,14 +6,14 @@ import {
   MutationMask,
   NoFlags,
   Placement,
-  Update
+  Update,
 } from "react-reconcile/src/ReactFiberFlags";
 import {commitMutationEffectsOnFiber} from "./ReactFiberCommitWork";
 import {
   FunctionComponent,
   HostComponent,
   HostRoot,
-  HostText
+  HostText,
 } from "react-reconcile/src/ReactWorkTags";
 import {finishQueueingConcurrentUpdates} from "./ReactFiberConcurrentUpdates";
 

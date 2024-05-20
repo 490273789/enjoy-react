@@ -7,44 +7,50 @@
   </head>
   <body>
     <script>
+      // react自己实现了 requestIdleCallback 规定每一帧的空闲时间为5ms
+      // 一个任务执行的时间
       function sleep(duration) {
         for (let t = Date.now(); Date.now() - t <= duration; ) {}
       }
+
+      // 任务队列
       const works = [
         () => {
-          console.log('task 1: start');
+          console.log(" task 1: start");
           sleep(2);
-          console.log('task 1: end');
+          console.log(" task 1: end");
         },
         () => {
-          console.log('task 2: start');
+          console.log(" task 2: start");
           sleep(2000);
-          console.log('task 2: end');
+          console.log(" task 2: end");
         },
         () => {
-          console.log('task 3: start');
+          console.log(" task 3: start");
           sleep(5);
-          console.log('task 3: end');
+          console.log(" task 3: end");
         },
         () => {
-          console.log('task 4: start');
+          console.log(" task 4: start");
           sleep(9);
-          console.log('task 4: end');
+          console.log(" task 4: end");
         },
       ];
 
       requestIdleCallback(workLoop);
+
+      /**
+       * 一帧使16.6毫秒，按照每秒60HZ计算出来了，浏览器执行完高优任务后，如果还有时间，会执行workLoop方法
+       * @params timeRemaining 每一帧剩下的时间
+       */
       function workLoop(deadline) {
-        // 一帧使16。6毫秒，浏览器执行完高优任务后，如果还有时间，会执行workLoop方法
-        // timeRemaining获取此桢剩下的时间
-        console.log(`本桢的剩余时间是：`, deadline.timeRemaining());
-        // 每一帧的调用，都会循环执行 performUnitOfWork
+        console.log(`start - 本桢的剩余时间是：`, deadline.timeRemaining());
         while (deadline.timeRemaining() > 1 && works.length > 0) {
           performUnitOfWork();
         }
         if (works.length > 0) {
           console.log(
-            `只剩下${deadline.timeRemaining()},等待浏览器下次空闲的时候调用`,
+            `只剩下${deadline.timeRemaining()}ms, 时间不够了，等待浏览器下次空闲的时候调用\r\n`,
           );
           requestIdleCallback(workLoop);
         }
@@ -52,7 +58,7 @@
 
       function performUnitOfWork() {
         let work = works.shift();
-        // 每个人物就是js执行的最小单位，使不能打断的
+        // 每个任务就是js执行的最小单位，是不能打断的
         // 这种方式称为合作式调度
         work();
       }
