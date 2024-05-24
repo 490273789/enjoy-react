@@ -7,11 +7,16 @@ export const UpdateState = 0;
  * 给fiber初始化一个更新队列
  * @param {*} fiber fiber节点
  */
-export function initialUpdateQueue(fiber) {
+export function initializeUpdateQueue(fiber) {
   const queue = {
+    baseState: fiber.memoizedState,
+    firstBaseUpdate: null,
+    lastBaseUpdate: null,
     shared: {
-      pending: null // 指向一个循环列表的最新的update
-    }
+      pending: null, // 指向一个循环列表的最新的update
+      // lanes: NoLanes,
+    },
+    effects: null,
   };
   fiber.updateQueue = queue;
 }
@@ -21,7 +26,13 @@ export function initialUpdateQueue(fiber) {
  * @returns {{tag: number}}
  */
 export function createUpdate() {
-  const update = {tag: UpdateState};
+  const update = {
+    tag: UpdateState,
+    payload: null,
+    callback: null,
+
+    next: null,
+  };
   return update;
 }
 
@@ -35,7 +46,12 @@ export function createUpdate() {
  */
 export function enqueueUpdate(fiber, update) {
   const updateQueue = fiber.updateQueue;
-  const pending = updateQueue.shared.pending;
+  if (updateQueue === null) {
+    // Only occurs if the fiber has been unmounted.
+    return null;
+  }
+  const sharedQueue = updateQueue.shared;
+  const pending = sharedQueue.pending;
   if (pending === null) {
     // 第一次更新，自己指向自己
     update.next = update;
@@ -44,7 +60,7 @@ export function enqueueUpdate(fiber, update) {
     pending.next = update;
   }
   // fiber的pending指向新的update（最后一个更新节点）
-  updateQueue.shared.pending = update;
+  sharedQueue.pending = update;
   return markUpdateLaneFromFiberToRoot(fiber);
 }
 
@@ -83,7 +99,7 @@ function getStateFromUpdate(update, preState) {
   }
 }
 // let fiber = {memoizedState: {id: 1}};
-// initialUpdateQueue(fiber);
+// initializeUpdateQueue(fiber);
 //
 // let update1 = createUpdate();
 // update1.payload = {name: 'wsn'};

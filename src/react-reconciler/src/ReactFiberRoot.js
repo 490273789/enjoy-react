@@ -1,5 +1,5 @@
 import {createHostRootFiber} from "./ReactFiber";
-import {initialUpdateQueue} from "./ReactFiberClassUpdateQueue";
+import {initializeUpdateQueue} from "./ReactFiberClassUpdateQueue";
 
 function FiberRootNode(containerInfo) {
   this.containerInfo = containerInfo;
@@ -19,6 +19,6 @@ export function createFiberRoot(containerInfo) {
   // 根节点的fiber的stateNode指向根节点（真实DOM）
   uninitializedFiber.stateNode = root;
   // 初始化fiber的更新队列
-  initialUpdateQueue(uninitializedFiber);
+  initializeUpdateQueue(uninitializedFiber);
   return root;
 }

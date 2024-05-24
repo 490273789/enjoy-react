@@ -50,7 +50,7 @@ function FunctionComponent() {
 const element = (
   <h1>
     hello,
-    <span id="id" className="text" style={{color: "red"}}>
+    <span key="1" id="id" className="text" style={{color: "red"}}>
       world
     </span>
   </h1>

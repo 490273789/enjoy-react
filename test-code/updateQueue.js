@@ -1,5 +1,5 @@
 /** 初始化更新队列 */
-function initialUpdateQueue(fiber) {
+function initializeUpdateQueue(fiber) {
   const queue = {
     shared: {
       pending: null, // 指向一个循环列表的最新的update
@@ -53,7 +53,7 @@ function getStateFromUpdate(update, preState) {
 }
 
 let fiber = {memoizedState: {id: 1}};
-initialUpdateQueue(fiber);
+initializeUpdateQueue(fiber);
 
 let update1 = createUpdate();
 update1.payload = {name: "wsn1"};

@@ -51,6 +51,10 @@ function performConcurrentWorkOnRoot(root) {
   workInProgressRoot = null;
 }
 
+/**
+ * commit 阶段
+ * @param {*} root
+ */
 function commitRoot(root) {
   const {finishedWork} = root;
   printFinishedWork(finishedWork);
