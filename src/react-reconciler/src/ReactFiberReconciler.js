@@ -13,7 +13,7 @@ export function createContainer(containerInfo) {
 
 /**
  * 更新容器
- * @param element 子元素的 ReactElement对象
+ * @param element root.render(element); 传给render的ReactElement
  * @param container 根节点 FiberRootNode.containerInfo = div#root
  */
 export function updateContainer(element, container) {

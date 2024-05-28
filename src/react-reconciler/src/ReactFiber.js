@@ -70,12 +70,12 @@ export function createHostRootFiber() {
 
 /**
  * 基于当前fiber或新的属性创建新的fiber
- * @param {*} current 老fiber
+ * @param {*} current 当前fiber
  * @param {*} pendingProps 新属性
  * @returns
  */
 export function createWorkInProgress(current, pendingProps) {
-  let workInProgress = current.alternate;
+  let workInProgress = current.alternate; // 获取轮替
   if (workInProgress === null) {
     // 创建新fiber
     workInProgress = createFiber(current.tag, pendingProps, current.key);

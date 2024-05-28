@@ -16,7 +16,11 @@ function createUpdate() {
 /** 将更新入队（创建队列结构） */
 function enqueueUpdate(fiber, update) {
   const updateQueue = fiber.updateQueue;
-  const pending = updateQueue.shared.pending;
+
+  if (updateQueue === null) return null;
+
+  const sharedQueue = updateQueue.shared;
+  const pending = sharedQueue.pending;
   if (pending === null) {
     // 第一次更新，自己指向自己
     update.next = update;

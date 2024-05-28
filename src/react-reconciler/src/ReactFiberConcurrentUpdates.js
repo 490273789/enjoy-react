@@ -23,6 +23,7 @@ export function finishQueueingConcurrentUpdates() {
     }
   }
 }
+
 /**
  * 将更新添加到更新队列中
  * @param fiber 函数组件对应的fiber

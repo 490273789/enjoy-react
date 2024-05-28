@@ -4,12 +4,12 @@ import {
   HostComponent,
   HostText,
   IndeterminateComponent,
-  FunctionComponent
+  FunctionComponent,
 } from "react-reconcile/src/ReactWorkTags";
 import {processUpdateQueue} from "./ReactFiberClassUpdateQueue";
 import {
   mountChildFibers,
-  reconcileChildFibers
+  reconcileChildFibers,
 } from "react-reconcile/src/ReactChildFiber";
 import {renderWithHooks} from "./ReactFiberHooks";
 import {shouldSetTextContent} from "react-dom-bindings/src/client/ReactDOMHostConfig";
@@ -25,11 +25,11 @@ function reconcileChildren(current, workInProgress, nextChildren) {
   if (current === null) {
     workInProgress.child = mountChildFibers(workInProgress, null, nextChildren);
   } else {
-    // 如果有老的fiber需要做DOM-DIFF，拿老的子fiber和新的DOM进行比较，最小化更新
+    // 如果有当前的fiber需要做DOM-DIFF，拿当前的子fiber和新的DOM进行比较，最小化更新
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
-      nextChildren
+      nextChildren,
     );
   }
 }
@@ -37,15 +37,15 @@ function reconcileChildren(current, workInProgress, nextChildren) {
  * 构建根fiber的子fiber链表
  * @param {*} current 当前的fiber
  * @param {*} workInProgress 新的fiber
- * @returns 第一个子节点
+ * @returns 第一个子节点的fiber
  */
 function updateHostRoot(current, workInProgress) {
-  // 需要知道他的子虚拟DOM，
-  processUpdateQueue(workInProgress); //根fiber的子虚拟DOM存在 workInProgress.memoizedState={element}上
+  // 需要知道根节点的子ReactElement update.payload = {element} -> workInProgress.memoizedState={element}
+  processUpdateQueue(workInProgress); // workInProgress.memoizedState={element}
   const nextState = workInProgress.memoizedState;
-  // 新的子虚拟DOM
+  // 根节点的子ReactElement
   const nextChildren = nextState.element;
-  // DOM-DIFF算法，根据新的虚拟DOM生成子fiber链表
+  // DOM-DIFF算法，根据跟节点的子ReactElement 生成子fiber链表
   reconcileChildren(current, workInProgress, nextChildren);
   return workInProgress.child;
 }
@@ -86,9 +86,9 @@ function updateHostComponent(current, workInProgress) {
 
 /**
  * 根据虚拟DOM构建新的fiber链表
- * @param current 老fiber
+ * @param current 当前fiber
  * @param workInProgress 新fiber
- * @returns {null}
+ * @returns {null} 返回当前fiber的子节点，没有返回null
  */
 export function beginWork(current, workInProgress) {
   logger(" ".repeat(indent.number) + "beginWork", workInProgress);
@@ -100,16 +100,15 @@ export function beginWork(current, workInProgress) {
       return mountIndeterminateComponent(
         current,
         workInProgress,
-        workInProgress.type
+        workInProgress.type,
       );
     case HostRoot: // 根fiber
       return updateHostRoot(current, workInProgress);
-    case HostComponent: // 原生组件
+    case HostComponent: // 原生组件 - div
       return updateHostComponent(current, workInProgress);
     case HostText:
       return null;
     default:
       return null;
   }
-  // return null;
 }

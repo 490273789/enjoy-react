@@ -21,34 +21,65 @@ let workInProgress = null;
 let workInProgressRoot = null;
 
 /**
- * 计划更新root
- * @param {*} root
+ * fiber的调度更新
+ * @param {*} root FiberRootNode
  */
 export function scheduleUpdateOnFiber(root) {
-  // 确保调度执行root上的更新
   ensureRootIsScheduled(root);
 }
 
+/**
+ * 确保调度执行root上的更新
+ * @param {*} root FiberRootNode
+ * @returns
+ */
 function ensureRootIsScheduled(root) {
   if (workInProgressRoot) return;
   workInProgressRoot = root;
-  // 告诉浏览器要执行此函数
+  // 告诉浏览器调度执行执行此函数
   scheduleCallback(performConcurrentWorkOnRoot.bind(null, root));
 }
 
 /**
- * 根据虚拟DOM创建fiber树，要创建真实的DOM节点，还需要把真实的DOM节点插入容器
- * @param {*} root
+ * 根据虚拟DOM创建fiber树，创建真实的DOM节点，把真实的DOM节点插入容器
+ * @param {*} root FiberRootNode
  */
 function performConcurrentWorkOnRoot(root) {
-  // debugger;
-  // 第一次以同步的方式渲染根节点，初次渲染的时候都是同步的，为了更快的给用户展现
+  // 第一次以同步的方式渲染根节点，为了更快的给用户展现
   renderRootSync(root);
+
   // 提交阶段，执行副作用，修改真实DOM
   const finishedWork = root.current.alternate;
   root.finishedWork = finishedWork;
   commitRoot(root);
   workInProgressRoot = null;
+}
+
+/**
+ * render阶段
+ * @param {*} root
+ */
+function renderRootSync(root) {
+  prepareFreshStack(root);
+  workLoopSync();
+}
+
+/**
+ * 准备fiber树的跟fiber - HostRootFiber
+ * @param {*} root
+ */
+function prepareFreshStack(root) {
+  workInProgress = createWorkInProgress(root.current, null);
+  finishQueueingConcurrentUpdates();
+}
+
+/**
+ * 开启render阶段的同步工作循环
+ */
+function workLoopSync() {
+  while (workInProgress !== null) {
+    performUnitOfWork(workInProgress);
+  }
 }
 
 /**
@@ -67,29 +98,12 @@ function commitRoot(root) {
   root.current = finishedWork;
 }
 
-function prepareFreshStack(root) {
-  workInProgress = createWorkInProgress(root.current, null);
-  finishQueueingConcurrentUpdates();
-}
-
-function renderRootSync(root) {
-  //  开始构建fiber树
-  prepareFreshStack(root);
-  workLoopSync();
-}
-
-function workLoopSync() {
-  while (workInProgress !== null) {
-    performUnitOfWork(workInProgress);
-  }
-}
-
 /**
  * 执行一个工作单元
- * @param unitOfWork
+ * @param unitOfWork 当前要处理的新fiber节点
  */
 function performUnitOfWork(unitOfWork) {
-  // 获取新fiber对应的老fiber
+  // 获取新fiber对应的当前fiber
   const current = unitOfWork.alternate;
   // 完成当前fiber的子fiber链表构建，获取子元素，创建子元素的fiber，返回这个fiber
   const next = beginWork(current, unitOfWork);
@@ -98,7 +112,7 @@ function performUnitOfWork(unitOfWork) {
     // 执行完成
     completeUnitOfWork(unitOfWork);
   } else {
-    // 没有完成继续循环，让子节点成为下一个工作单元
+    // 有子节点，让子节点成为下一个工作单元
     workInProgress = next;
   }
 }
