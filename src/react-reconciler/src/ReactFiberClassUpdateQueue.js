@@ -23,15 +23,15 @@ export function initializeUpdateQueue(fiber) {
 
 /**
  * 创建一个更新
- * @returns {{tag: number}}
+ * @returns 返回update对象
  */
 export function createUpdate() {
   const update = {
-    tag: UpdateState,
-    payload: null,
+    tag: UpdateState, // 更新的类型
+    payload: null, // HostRootFiber的payload的element存储的是它的子组件
     callback: null,
 
-    next: null,
+    next: null, // 指向下一个更新
   };
   return update;
 }
@@ -65,7 +65,8 @@ export function enqueueUpdate(fiber, update) {
 }
 
 /**
- * 根据老状态和更新队列中的更新计算新的状态
+ * 处理fiber的状态 - memoizedState
+ * 根据当前状态和更新队列中的状态计算新的状态
  * @param {*} fiber 要计算的fiber
  */
 export function processUpdateQueue(fiber) {
@@ -78,13 +79,14 @@ export function processUpdateQueue(fiber) {
     const firstPendingUpdate = lastPendingUpdate.next;
     // 剪断循环链表
     lastPendingUpdate.next = null;
-    // 计算新的状态
+    // 获取当前状态
     let newState = fiber.memoizedState;
     let update = firstPendingUpdate;
     while (update) {
       newState = getStateFromUpdate(update, newState);
       update = update.next;
     }
+    // 赋值新状态
     fiber.memoizedState = newState;
   }
 }

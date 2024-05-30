@@ -18,14 +18,14 @@ import {shouldSetTextContent} from "react-dom-bindings/src/client/ReactDOMHostCo
  * 根据新的虚拟DOM生成新的fiber链表
  * @param current 当前的父fiber
  * @param workInProgress 新的父fiber
- * @param nextChildren 新的子虚拟DOM
+ * @param nextChildren 新的子ReactElement
  */
 function reconcileChildren(current, workInProgress, nextChildren) {
-  // 如果没有老的fiber，说明此fiber是新创建的，那么他的所有子fiber都是新创建的
+  // 如果没有当前的fiber，说明此fiber是新创建的，他的所有子fiber都是新创建的
   if (current === null) {
     workInProgress.child = mountChildFibers(workInProgress, null, nextChildren);
   } else {
-    // 如果有当前的fiber需要做DOM-DIFF，拿当前的子fiber和新的DOM进行比较，最小化更新
+    // 如果有,当前的fiber需要做DOM-DIFF，拿当前的子fiber和新的DOM进行比较，最小化更新
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
@@ -34,7 +34,7 @@ function reconcileChildren(current, workInProgress, nextChildren) {
   }
 }
 /**
- * 构建根fiber的子fiber链表
+ * 处理根节点的fiber树构建
  * @param {*} current 当前的fiber
  * @param {*} workInProgress 新的fiber
  * @returns 第一个子节点的fiber
@@ -45,14 +45,14 @@ function updateHostRoot(current, workInProgress) {
   const nextState = workInProgress.memoizedState;
   // 根节点的子ReactElement
   const nextChildren = nextState.element;
-  // DOM-DIFF算法，根据跟节点的子ReactElement 生成子fiber链表
+  // DOM-DIFF算法，根据根节点的子ReactElement 生成子fiber链表
   reconcileChildren(current, workInProgress, nextChildren);
   return workInProgress.child;
 }
 
 /**
  * 挂载函数组件
- * @param current 老fiber
+ * @param current 当前fiber
  * @param workInProgress 新fiber
  * @param Component 组件类型，也就是函数组件的定义
  */
@@ -68,7 +68,7 @@ function mountIndeterminateComponent(current, workInProgress, Component) {
 
 /**
  * 构建原生组件的子fiber链表
- * @param current 老的fiber
+ * @param current 当前的fiber
  * @param workInProgress 新fiber
  */
 function updateHostComponent(current, workInProgress) {
@@ -106,7 +106,7 @@ export function beginWork(current, workInProgress) {
       return updateHostRoot(current, workInProgress);
     case HostComponent: // 原生组件 - div
       return updateHostComponent(current, workInProgress);
-    case HostText:
+    case HostText: // 文本节点一定是没有子节点的
       return null;
     default:
       return null;

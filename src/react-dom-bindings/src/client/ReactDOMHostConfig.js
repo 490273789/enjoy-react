@@ -1,10 +1,16 @@
-import {setInitialProperties} from './ReactDOMComponents';
-import {preCacheFiberNode} from './ReactDOMComponentTree';
-import {updateFiberProps} from './ReactDOMComponentTree';
+import {setInitialProperties} from "./ReactDOMComponents";
+import {preCacheFiberNode} from "./ReactDOMComponentTree";
+import {updateFiberProps} from "./ReactDOMComponentTree";
 
+/**
+ * 判断是否为文本节点
+ * @param {*} type 节点类型
+ * @param {*} props 节点的props
+ * @returns
+ */
 export function shouldSetTextContent(type, props) {
   return (
-    typeof props.children === 'string' || typeof props.children === 'number'
+    typeof props.children === "string" || typeof props.children === "number"
   );
 }
 

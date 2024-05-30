@@ -10,10 +10,10 @@ import isArray from "shared/isArray";
 function createChildReconciler(shouldTrackSideEffects) {
   /**
    * 协调单个节点
-   * @param {*} returnFiber
-   * @param {*} currentFirstFiber
-   * @param {*} element
-   * @returns fiber
+   * @param {*} returnFiber 新的父fiber
+   * @param {*} currentFirstFiber 当前fiber的第一个子fiber， 初次挂在上null
+   * @param {*} element 当前fiber的子ReactElement
+   * @returns 新创建fiber
    */
   function reconcileSingleElement(returnFiber, currentFirstFiber, element) {
     // TODO: 初次渲染直接创建
@@ -47,6 +47,7 @@ function createChildReconciler(shouldTrackSideEffects) {
     newFiber.index = newIdx; // 当前是第几个子元素
     if (shouldTrackSideEffects) {
       // 父fiber如果是初次挂载，shouldTrackSideEffects为false，不需要添加flags
+      // 完成阶段会将所有子节点添加到自己身上
       newFiber.flags |= Placement;
     }
   }
@@ -120,7 +121,7 @@ function createChildReconciler(shouldTrackSideEffects) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
           return placeSingleChild(
-            reconcileSingleElement(returnFiber, currentFirstFiber, newChild)
+            reconcileSingleElement(returnFiber, currentFirstFiber, newChild),
           );
         default:
           break;
@@ -141,7 +142,7 @@ function createChildReconciler(shouldTrackSideEffects) {
   return reconcileChildFibers;
 }
 
-// 当前有挂在的fiber
+// 当前有挂在的fiber，更新
 export const reconcileChildFibers = createChildReconciler(true);
 
 // 当前没有已挂载fiber，初次挂载
