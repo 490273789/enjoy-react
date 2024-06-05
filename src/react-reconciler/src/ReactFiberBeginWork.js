@@ -74,7 +74,7 @@ function mountIndeterminateComponent(current, workInProgress, Component) {
 function updateHostComponent(current, workInProgress) {
   const {type} = workInProgress;
   const nextProps = workInProgress.pendingProps;
-  let nextChildren = nextProps.children; // 子fiber
+  let nextChildren = nextProps.children; // 子虚拟DOM
   // 如果子节点是一个文本节点, 优化处理
   const isDirectTextChild = shouldSetTextContent(type, nextProps);
   if (isDirectTextChild) {

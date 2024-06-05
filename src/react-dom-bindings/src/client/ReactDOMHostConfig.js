@@ -49,10 +49,11 @@ export function appendInitialChild(parent, child) {
 }
 
 /**
- *
- * @param {*} domElement 当前的实例
+ * 对于HostComponent类型的fiber对应的真实DOM实例设置属性
+ * 注意如果此fiber只有一个文本节点，也是在这里进行处理的
+ * @param {*} domElement 真实DOM
  * @param {*} type fiber类型
- * @param {*} props 新的节点的属性
+ * @param {*} props 节点的属性
  */
 export function finalizeInitialChild(domElement, type, props) {
   setInitialProperties(domElement, type, props);

@@ -11,9 +11,9 @@ function createChildReconciler(shouldTrackSideEffects) {
   /**
    * 协调单个节点
    * @param {*} returnFiber 新的父fiber
-   * @param {*} currentFirstFiber 当前fiber的第一个子fiber， 初次挂在上null
+   * @param {*} currentFirstFiber 当前fiber的第一个子fiber， 初次挂在是null
    * @param {*} element 当前fiber的子ReactElement
-   * @returns 新创建fiber
+   * @returns 新创建的子fiber
    */
   function reconcileSingleElement(returnFiber, currentFirstFiber, element) {
     // TODO: 初次渲染直接创建
@@ -84,14 +84,15 @@ function createChildReconciler(shouldTrackSideEffects) {
 
   /**
    * 多个子fiber，比较子fiber DOM-DIFF 就是用当前的子fiber链表和新的虚拟DOM进行比较
-   * @param {*} returnFiber 新的父Fiber
+   * 将兄弟节点用sibling连接
+   * @param {*} returnFiber 新的Fiber
    * @param {*} currentFirstFiber 当前的fiber的第一个子fiber
-   * @param {*} newChildren 新的虚拟DOM
+   * @param {*} newChildren 新fiber的虚拟DOM
    * @returns {*} fiber链表
    */
   function reconcileChildrenArray(returnFiber, currentFirstFiber, newChildren) {
     let resultingFirstChild = null; // 第一个新儿子
-    let previousNewFiber = null; // 上一个的新的fiber
+    let previousNewFiber = null; // 记录上一个fiber，目的是与下一个sibling连接
     let newIdx = 0; // 记录children的长度
     for (; newIdx < newChildren.length; newIdx++) {
       const newFiber = createChild(returnFiber, newChildren[newIdx]);
@@ -103,7 +104,6 @@ function createChildReconciler(shouldTrackSideEffects) {
       } else {
         previousNewFiber.sibling = newFiber;
       }
-      // 让newFiber成为最新一个fiber
       previousNewFiber = newFiber;
     }
     return resultingFirstChild;
@@ -111,9 +111,9 @@ function createChildReconciler(shouldTrackSideEffects) {
 
   /**
    * 比较子Fibers - DOM-DIFF 用当前的子fiber链表和新的子fiber进行对比
-   * @param returnFiber 新的父Fiber
+   * @param returnFiber 新的Fiber
    * @param currentFirstFiber 当前fiber第一个子fiber
-   * @param newChild 新的子虚拟DOM
+   * @param newChild 新fiber的子虚拟DOM
    */
   function reconcileChildFibers(returnFiber, currentFirstFiber, newChild) {
     // TODO:现在只考虑新节点只有一个的情况

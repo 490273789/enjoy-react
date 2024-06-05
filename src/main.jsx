@@ -5,12 +5,12 @@ import {createRoot} from "react-dom/client";
 //   <h1
 //     onClick={() => console.log('父冒泡')}
 //     onClickCapture={() => console.log(`父捕获`)}>
-//     hello,
+//     Hi,
 //     <span
 //       onClick={() => console.log('子冒泡')}
 //       onClickCapture={() => console.log(`子捕获`)}
 //       style={{color: 'red'}}>
-//       world
+//       React
 //     </span>
 //   </h1>
 // );
@@ -37,21 +37,21 @@ function FunctionComponent() {
   //   <h2
   //     onClick={() => console.log('父冒泡')}
   //     onClickCapture={() => console.log(`父捕获`)}>
-  //     hello,
+  //     Hi,
   //     <span
   //       onClick={() => console.log('子冒泡')}
   //       onClickCapture={() => console.log(`子捕获`)}
   //       style={{color: 'green'}}>
-  //       react
+  //       React
   //     </span>
   //   </h2>
   // );
 }
 const element = (
   <h1>
-    hello,
-    <span key="1" id="id" className="text" style={{color: "red"}}>
-      world
+    Hi,
+    <span key="1" id="id" className="text" style={{color: "#6699ff"}}>
+      React
     </span>
   </h1>
 );

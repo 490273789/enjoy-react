@@ -1,14 +1,14 @@
-import logger from "shared/logger";
+import logger, {indent} from "shared/logger";
 import {
   HostComponent,
   HostRoot,
-  HostText
+  HostText,
 } from "react-reconcile/src/ReactWorkTags";
 import {
   createTextInstance,
   createInstance,
   appendInitialChild,
-  finalizeInitialChild
+  finalizeInitialChild,
 } from "react-dom-bindings/src/client/ReactDOMHostConfig";
 import {NoFlags} from "react-reconcile/src/ReactFiberFlags";
 
@@ -45,12 +45,12 @@ export function appendAllChildren(parent, workInProgress) {
 
 /**
  * 完成一个fiber节点
- * @param current 老fiber
+ * @param current 当前fiber
  * @param workInProgress 新fiber
  */
 export function completeWork(current, workInProgress) {
-  // logger(' '.repeat(indent.number) + 'completeWork', workInProgress);
-  // indent.number -= 2;
+  logger(" ".repeat(indent.number) + "completeWork", workInProgress);
+  indent.number -= 2;
   const newProps = workInProgress.pendingProps;
   switch (workInProgress.tag) {
     case HostRoot:
@@ -63,7 +63,7 @@ export function completeWork(current, workInProgress) {
       appendAllChildren(instance, workInProgress);
 
       workInProgress.stateNode = instance;
-
+      // 处理props，将节点的属性设置到DOM实例上
       finalizeInitialChild(instance, type, newProps);
       bubbleProperties(workInProgress);
       break;
@@ -78,7 +78,7 @@ export function completeWork(current, workInProgress) {
 }
 
 /**
- * 收集子节点的副作用
+ * 收集所有子节点的副作用
  * @param completedWork
  */
 function bubbleProperties(completedWork) {
