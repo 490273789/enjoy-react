@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="div"></div>
+
+    <script>
+      const oDiv = document.getElementById("div");
+      let count = 0;
+      for (let i in oDiv) {
+        count++;
+      }
+      console.log("[ count ] >", count);
+      Object.getOwnPropertyNames(oDiv);
+      console.log(
+        "[ Object.getOwnPropertyNames ] >",
+        Object.getOwnPropertyNames(oDiv),
+      );
+      // 打印DOM属性的集中方法
+      console.log("[ oDiv-count ] >", Object.keys(oDiv));
+      console.log("%O", oDiv);
+      console.log("[ oDiv ] >", [oDiv]);
+      console.dir(oDiv);
+    </script>
+  </body>
+</html>
