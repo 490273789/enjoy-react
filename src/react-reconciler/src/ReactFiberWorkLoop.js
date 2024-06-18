@@ -83,8 +83,8 @@ function workLoopSync() {
 }
 
 /**
- * commit 阶段
- * @param {*} root
+ * commit 阶段，执行副作用，修改真实DOM
+ * @param {*} root 根节点
  */
 function commitRoot(root) {
   const {finishedWork} = root;

@@ -35,8 +35,8 @@ export function getFiberCurrentPropsFromNode(node) {
 
 /**
  * 将props缓存在dom上
- * @param node
- * @param props
+ * @param node dom节点
+ * @param props fiber的props属性
  */
 export function updateFiberProps(node, props) {
   node[internalPropsKey] = props;
