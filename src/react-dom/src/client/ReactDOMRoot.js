@@ -1,6 +1,6 @@
 import {
   createContainer,
-  updateContainer
+  updateContainer,
 } from "react-reconcile/src/ReactFiberReconciler";
 import {listenToAllSupportedEvents} from "react-dom-bindings/src/events/DOMPluginEventSystem";
 
@@ -29,6 +29,7 @@ ReactDOMRoot.prototype.render = function (children) {
  */
 export function createRoot(container) {
   const root = createContainer(container); // FiberRootNode root = {containerInfo: div#root} 一个真实的dom节点
+  // 创建完真实的Root节点后，开始代理事件
   listenToAllSupportedEvents(container);
   return new ReactDOMRoot(root);
 }

@@ -1,4 +1,4 @@
-import assign from 'shared/assign';
+import assign from "shared/assign";
 
 function functionThatReturnTrue() {
   return true;
@@ -14,7 +14,7 @@ const MouseEventInterface = {
 };
 
 /**
- * 创建一个合成事件
+ * 创建一个合成事件的对象
  * @param {*} Interface 不同和成事件的接口
  * @returns 返回这个合成事件
  */
@@ -41,7 +41,7 @@ function createSyntheticEvent(Interface) {
     this.isPropagationStopped = functionThatReturnFalse;
     return this;
   }
-
+  // 设置基类的原型链
   assign(SyntheticBaseEvent.prototype, {
     preventDefault() {
       const event = this.nativeEvent;

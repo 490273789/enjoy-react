@@ -11,7 +11,9 @@ function FiberNode(tag, pendingProps, key) {
   this.tag = tag; // fiber的标签，根据ReactElement的type进行生成,共有25种tag：根元素 - 3，函数组件 - 0
   this.key = key; // 唯一标识，和ReactElement组件的key一致
   this.elementType; // 一般来讲和ReactElement的key一致
-  // fiber类型，来自于虚拟DOM的type - div、span...一般和fiber.elementType一致(dev环境又特殊处理).
+  // fiber类型，来自于虚拟DOM的type，一般和fiber.elementType一致(dev环境又特殊处理).
+  // 原生组件：div、span...
+  // 函数组件：函数本身
   this.type = null;
   // fiber对应的真实DOM节点，根节点fiber.stateNode指向的是FiberRoot; class 类型节点其stateNode指向的是 class 实例
   this.stateNode = null;

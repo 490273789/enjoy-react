@@ -51,10 +51,10 @@ function updateHostRoot(current, workInProgress) {
 }
 
 /**
- * 挂载函数组件
+ * 处理函数组件
  * @param current 当前fiber
  * @param workInProgress 新fiber
- * @param Component 组件类型，也就是函数组件的定义
+ * @param Component 组件类型，函数组件就是函数本身
  */
 function mountIndeterminateComponent(current, workInProgress, Component) {
   const props = workInProgress.pendingProps;
