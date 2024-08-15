@@ -7,34 +7,38 @@ const {ReactCurrentDispatcher} = ReactSharedInternals;
 let currentlyRenderingFiber = null;
 let workInProgressHook = null;
 let currentHook = null;
+
+// 初次挂在
 const HooksDispatcherOnMount = {
-  useReducer: mountReducer
+  useReducer: mountReducer,
 };
 
+// 更新
 const HooksDispatcherOnUpdate = {
-  useReducer: updateReducer
+  useReducer: updateReducer,
 };
 
 /**
- * 挂载useReducer，写一个useReducer就会调用一遍
+ * 代码执行到useReducer的时候会执行此函数
+ * 挂载useReducer，每个useReducer都回调用一遍此函数
  * @param reducer useReducer的第一个参数
  * @param initialArg useReducer的第二个参数
  * @returns {(*)[]} 返回一个元组[state, dispatch]
  */
 function mountReducer(reducer, initialArg) {
   const hook = mountWorkInProgressHook();
-  hook.memoizedState = initialArg;
+  hook.memoizedState = initialArg; // 初始化hook的状态
   // 一个useReducer多次调用dispatch，会共同使用这个更新队列
   const queue = {
     pending: null,
-    dispatch: null
+    dispatch: null,
   };
   hook.queue = queue;
 
   const dispatch = (queue.dispatch = dispatchReducerAction.bind(
     null,
     currentlyRenderingFiber,
-    queue
+    queue,
   ));
   return [hook.memoizedState, dispatch];
 }
@@ -70,15 +74,16 @@ function updateReducer(reducer) {
 
 /**
  * 执行派发动作的方法，更新状态，是页面重新渲染
+ * 前两个参数是bind绑定的是后传入的，后一个参数使用使用dispatch的时候传入的action
  * @param fiber function对应的fiber
  * @param queue hook对应的更新队列
- * @param action 派发的动作
+ * @param action 派发的动作 - 用户传入的
  */
 function dispatchReducerAction(fiber, queue, action) {
   // 每个hook中会存放一个更新队列
   const update = {
     action,
-    next: null
+    next: null,
   };
   // 把当前最新的更新添加到更新队列中，并返回当前的fiber
   const root = enqueueCurrentHookUpdate(fiber, queue, update);
@@ -100,7 +105,7 @@ function updateWorkInProgressHook() {
   const newHook = {
     memoizedState: currentHook.memoizedState,
     queue: currentHook.queue,
-    next: null
+    next: null,
   };
   if (workInProgressHook === null) {
     // memoizedState指向链表的头部
@@ -120,7 +125,7 @@ function mountWorkInProgressHook() {
   const hook = {
     memoizedState: null, // hook状态
     queue: null, // 存放本hook的更新队列， queue.pending = update
-    next: null // 指向下一个hook，一个函数可能有多个hook，他们会组成一个单向列表
+    next: null, // 指向下一个hook，一个函数可能有多个hook，他们会组成一个单向列表
   };
   if (workInProgressHook === null) {
     // memoizedState指向链表的头部

@@ -9,29 +9,29 @@ function App() {
   const [number1, dispatch1] = React.useReducer(reducer, 0);
   const [number2, dispatch2] = React.useReducer(reducer, 0);
 
-  // return (
-  //   <button
-  //     onClick={() => {
-  //       dispatch1({type: "add", payload: 1});
-  //       dispatch1({type: "add", payload: 2});
-  //       dispatch1({type: "add", payload: 3});
-  //     }}>
-  //     {number1}
-  //   </button>
-  // );
   return (
-    <h2
-      onClick={() => console.log("父冒泡")}
-      onClickCapture={() => console.log(`父捕获`)}>
-      Hi,
-      <span
-        onClick={() => console.log("子冒泡")}
-        onClickCapture={() => console.log(`子捕获`)}
-        style={{color: "green"}}>
-        React
-      </span>
-    </h2>
+    <button
+      onClick={() => {
+        dispatch1({type: "add", payload: 1});
+        dispatch1({type: "add", payload: 2});
+        dispatch1({type: "add", payload: 3});
+      }}>
+      {number1}
+    </button>
   );
+  // return (
+  //   <h2
+  //     onClick={() => console.log("父冒泡")}
+  //     onClickCapture={() => console.log(`父捕获`)}>
+  //     Hi,
+  //     <span
+  //       onClick={() => console.log("子冒泡")}
+  //       onClickCapture={() => console.log(`子捕获`)}
+  //       style={{color: "green"}}>
+  //       React
+  //     </span>
+  //   </h2>
+  // );
 }
 
 // jsx写法

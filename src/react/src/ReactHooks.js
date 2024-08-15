@@ -1,10 +1,10 @@
-import ReactCurrentDispatcher from './ReactCurrentDispatcher';
+import ReactCurrentDispatcher from "./ReactCurrentDispatcher";
 
 function resolveDispatcher() {
   return ReactCurrentDispatcher.current;
 }
 /**
- *
+ * 相关逻辑是在react-reconciler中实现的
  * @param reducer 处理函数，根据老状态计算新状态
  * @param initialArg 初始状态
  */
