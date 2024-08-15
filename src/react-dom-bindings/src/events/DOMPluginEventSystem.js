@@ -47,7 +47,8 @@ function extractEvents(
  * @param {*} currentTarget
  */
 function executeDispatch(listener, event, currentTarget) {
-  // 添加了一个属性可以拿到当前的dom对象
+  // nativeEventTarget 是原始事件源，不是变的（点击的那个元素）
+  // currentTarget随着事件执行不断变化的
   event.currentTarget = currentTarget;
   // 最终执行回调函数;
   listener(event);

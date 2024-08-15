@@ -1,6 +1,6 @@
-import {registerTwoPhaseEvent} from './EventRegistry';
+import {registerTwoPhaseEvent} from "./EventRegistry";
 
-const simpleEventPluginEvents = ['click'];
+const simpleEventPluginEvents = ["click"];
 // {'click': 'onClick'}
 export const topLevelEventsToReactNames = new Map();
 
@@ -11,6 +11,15 @@ export const topLevelEventsToReactNames = new Map();
  */
 function registerSimpleEvent(domEventName, reactName) {
   topLevelEventsToReactNames.set(domEventName, reactName);
+  //   {
+  //     onBlur: ['blur'],
+  //     onClick: ['click'],
+  //     onClickCapture: ['click'],
+  //     onChange: ['blur', 'change', 'click', 'focus', 'input', 'keydown', 'keyup', 'selectionchange'],
+  //     onMouseEnter: ['mouseout', 'mouseover'],
+  //     onMouseLeave: ['mouseout', 'mouseover'],
+  // }
+  //  因为部分事件的映射有多个，所以用数组
   registerTwoPhaseEvent(reactName, [domEventName]);
 }
 

@@ -7,9 +7,9 @@ import {accumulateSinglePhaseListeners} from "../DOMPluginEventSystem";
 import {SyntheticMouseEvent} from "./SyntheticEvent";
 
 /**
- * 1。收集事件回调
- * 2。合成事件对象
- * 3。方式派发队列dispatchQueue中
+ * 1. 收集事件回调
+ * 2. 合成事件对象
+ * 3. 方式派发队列dispatchQueue中
  * @param {*} dispatchQueue 事件的派发队列
  * @param {*} domEventName 原生事件名称，如：click
  * @param {*} targetInst 当前节点的fiber
@@ -34,6 +34,9 @@ function extractEvents(
   switch (domEventName) {
     case "click":
       SyntheticEventCtor = SyntheticMouseEvent; // click的合成事件
+      break;
+    default:
+      break;
   }
   const isCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
   const listeners = accumulateSinglePhaseListeners(
@@ -45,7 +48,6 @@ function extractEvents(
 
   let reactEventType = domEventName;
   // 如果有要执行的监听函数- listener：[{listeners, instance, currentTarget }]
-  // new 合成事件对象
   if (listeners.length > 0) {
     const event = new SyntheticEventCtor(
       reactName,
@@ -54,6 +56,7 @@ function extractEvents(
       nativeEvent,
       nativeEventTarget,
     );
+    // event 合成事件对象
     dispatchQueue.push({
       event,
       listeners,
