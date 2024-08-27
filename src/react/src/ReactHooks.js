@@ -12,3 +12,12 @@ export function useReducer(reducer, initialArg) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useReducer(reducer, initialArg);
 }
+
+/**
+ * 相关逻辑是在react-reconciler中实现的
+ * @param initialArg 初始状态
+ */
+export function useState(initialArg) {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.useState(initialArg);
+}

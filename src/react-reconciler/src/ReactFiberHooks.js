@@ -12,12 +12,67 @@ let currentHook = null;
 // 初次挂在
 const HooksDispatcherOnMount = {
   useReducer: mountReducer,
+  useState: mountState,
 };
 
 // 更新
 const HooksDispatcherOnUpdate = {
   useReducer: updateReducer,
+  useState: updateState,
 };
+
+/**
+ * setState 在传入的新状态和当前的状态相同时跳过更新
+ * @param {*} initialState
+ * @returns
+ */
+function mountState(initialState) {
+  const hook = mountWorkInProgressHook();
+  hook.memoizedState = initialState;
+  const queue = {
+    pending: null,
+    dispatch: null,
+    lastRenderedReducer: baseStateReducer, // 上次的reducer
+    lastRenderedState: initialState, // 上次的状态
+  };
+  hook.queue = queue;
+
+  const dispatch = (queue.dispatch = dispatchSetState.bind(
+    null,
+    currentlyRenderingFiber,
+    queue,
+  ));
+
+  return [hook.memoizedState, dispatch];
+}
+
+function dispatchSetState(fiber, queue, action) {
+  const update = {
+    action,
+    hasEagerState: false,
+    eagerState: null,
+    next: null,
+  };
+  const {lastRenderedReducer, lastRenderedState} = queue;
+
+  const eagerState = lastRenderedReducer(lastRenderedState, action);
+  update.hasEagerState = true;
+  update.eagerState = eagerState;
+  if (Object.is(eagerState, lastRenderedState)) {
+    return;
+  }
+  const root = enqueueCurrentHookUpdate(fiber, queue, update);
+  scheduleUpdateOnFiber(root);
+}
+
+// useState其实就是内置了reducer的useState
+function baseStateReducer(state, action) {
+  return typeof action === "function" ? action(state) : action;
+}
+
+function updateState() {
+  return updateReducer(baseStateReducer);
+}
 
 /**
  * 代码执行到useReducer的时候会执行此函数
@@ -65,8 +120,12 @@ function updateReducer(reducer) {
     const firstUpdate = pendingQueue.next;
     let update = firstUpdate;
     do {
-      const action = update.action;
-      newState = reducer(newState, action);
+      if (update.hasEagerState) {
+        newState = update.eagerState;
+      } else {
+        const action = update.action;
+        newState = reducer(newState, action);
+      }
       update = update.next;
     } while (update !== null && update !== firstUpdate);
   }
