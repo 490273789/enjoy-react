@@ -66,6 +66,24 @@ function mountIndeterminateComponent(current, workInProgress, Component) {
   return workInProgress.child;
 }
 
+export function updateFunctionComponent(
+  current,
+  workInProgress,
+  Component,
+  nextProps,
+) {
+  // react元素
+  const nextChildren = renderWithHooks(
+    current,
+    workInProgress,
+    Component,
+    nextProps,
+  );
+  // 处理完成后变为fiber
+  reconcileChildren(current, workInProgress, nextChildren);
+  return workInProgress.child;
+}
+
 /**
  * 构建原生组件的子fiber链表
  * @param current 当前的fiber
@@ -102,6 +120,16 @@ export function beginWork(current, workInProgress) {
         workInProgress,
         workInProgress.type,
       );
+    case FunctionComponent: {
+      const Component = workInProgress.type;
+      const nextProps = workInProgress.pendingProps;
+      return updateFunctionComponent(
+        current,
+        workInProgress,
+        Component,
+        nextProps,
+      );
+    }
     case HostRoot: // 根fiber
       return updateHostRoot(current, workInProgress);
     case HostComponent: // 原生组件 - div

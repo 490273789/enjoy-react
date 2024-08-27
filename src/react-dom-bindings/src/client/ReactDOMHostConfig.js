@@ -1,4 +1,8 @@
-import {setInitialProperties} from "./ReactDOMComponents";
+import {
+  setInitialProperties,
+  diffProperties,
+  updateProperties,
+} from "./ReactDOMComponents";
 import {preCacheFiberNode} from "./ReactDOMComponentTree";
 import {updateFiberProps} from "./ReactDOMComponentTree";
 
@@ -55,7 +59,7 @@ export function appendInitialChild(parent, child) {
  * @param {*} type fiber类型
  * @param {*} props 节点的属性
  */
-export function finalizeInitialChild(domElement, type, props) {
+export function finalizeInitialChildren(domElement, type, props) {
   setInitialProperties(domElement, type, props);
 }
 
@@ -64,4 +68,19 @@ export function appendChild(parentInstance, child) {
 }
 export function insertBefore(parentInstance, child, beforeChild) {
   parentInstance.insertBefore(child, beforeChild);
+}
+
+export function prepareUpdate(domElement, type, oldProps, newProps) {
+  return diffProperties(domElement, type, oldProps, newProps);
+}
+
+export function commitUpdate(
+  domElement,
+  updatePayload,
+  type,
+  oldProps,
+  newProps,
+) {
+  updateProperties(domElement, updatePayload, type, oldProps, newProps);
+  updateFiberProps(domElement, newProps);
 }

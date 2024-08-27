@@ -2,12 +2,14 @@ import * as React from "react";
 import {createRoot} from "react-dom/client";
 
 function reducer(state, action) {
-  if (action.type === "add") return state + 1;
+  if (action.type === "add") return state + action.payload;
   else return state;
 }
+
 function App() {
   const [number1, dispatch1] = React.useReducer(reducer, 0);
-  const [number2, dispatch2] = React.useReducer(reducer, 0);
+  console.log("number1:", number1);
+  // const [number2, dispatch2] = React.useReducer(reducer, 0);
 
   return (
     <button

@@ -3,14 +3,17 @@ import {
   HostComponent,
   HostRoot,
   HostText,
+  FunctionComponent,
+  IndeterminateComponent,
 } from "react-reconcile/src/ReactWorkTags";
 import {
   createTextInstance,
   createInstance,
   appendInitialChild,
-  finalizeInitialChild,
+  finalizeInitialChildren,
+  prepareUpdate,
 } from "react-dom-bindings/src/client/ReactDOMHostConfig";
-import {NoFlags} from "react-reconcile/src/ReactFiberFlags";
+import {NoFlags, Update} from "react-reconcile/src/ReactFiberFlags";
 
 /**
  * 将fiber的所有子节点对应的真实节点挂在到自己的DOM上
@@ -43,6 +46,31 @@ export function appendAllChildren(parent, workInProgress) {
   }
 }
 
+// 给当前的fiber添加更新的副作用
+function markUpdate(workInProgress) {
+  workInProgress.flags |= Update;
+}
+
+/**
+ * 在fiber的完成阶段准备更新DOM
+ * @param {*} current
+ * @param {*} workInProgress
+ * @param {*} type
+ * @param {*} newProps
+ */
+function updateHostComponent(current, workInProgress, type, newProps) {
+  const oldProps = current.memoizedProps; // 当前fiber的props
+  const instance = workInProgress.stateNode; // 当前的原生DOM
+  // 比较新属性和当前属性的差异
+  // updatePayload = ['id', 'class', children]
+  const updatePayload = prepareUpdate(instance, type, oldProps, newProps);
+  console.log("[ updatePayload ] >", updatePayload);
+  workInProgress.updateQueue = updatePayload;
+  if (updatePayload) {
+    markUpdate(workInProgress);
+  }
+}
+
 /**
  * 完成一个fiber节点
  * @param current 当前fiber
@@ -53,18 +81,28 @@ export function completeWork(current, workInProgress) {
   indent.number -= 2;
   const newProps = workInProgress.pendingProps;
   switch (workInProgress.tag) {
+    case IndeterminateComponent:
+    case FunctionComponent:
+      bubbleProperties(workInProgress);
+      break;
     case HostRoot:
       bubbleProperties(workInProgress);
       break;
     case HostComponent:
       const {type} = workInProgress;
-      const instance = createInstance(type, newProps, workInProgress);
-      // 将所有子节点挂载到自己身上
-      appendAllChildren(instance, workInProgress);
+      // 更新的逻辑
+      if (current !== null && workInProgress.stateNode !== null) {
+        updateHostComponent(current, workInProgress, type, newProps);
+      } else {
+        // 挂载逻辑
+        const instance = createInstance(type, newProps, workInProgress);
+        // 将所有子节点挂载到自己身上
+        appendAllChildren(instance, workInProgress);
 
-      workInProgress.stateNode = instance;
-      // 处理props，将节点的属性设置到DOM实例上
-      finalizeInitialChild(instance, type, newProps);
+        workInProgress.stateNode = instance;
+        // 处理props，将节点的属性设置到DOM实例上
+        finalizeInitialChildren(instance, type, newProps);
+      }
       bubbleProperties(workInProgress);
       break;
     case HostText:

@@ -6,6 +6,7 @@ const {ReactCurrentDispatcher} = ReactSharedInternals;
 // 当前正在渲染中的fiber
 let currentlyRenderingFiber = null;
 let workInProgressHook = null;
+// 当前的hooks
 let currentHook = null;
 
 // 初次挂在
@@ -49,12 +50,13 @@ function mountReducer(reducer, initialArg) {
  * @returns {(*)[]} 返回一个元组[state, dispatch]
  */
 function updateReducer(reducer) {
+  // 获取新的hooks
   const hook = updateWorkInProgressHook();
-  // 获取跟新hook的更新队列
+  // 获取新hook的更新队列
   const queue = hook.queue;
-  // 获取老的hook
+  // 获取当前的hook
   const current = currentHook;
-  // 获取将要生效的更新队列
+  // 获取将要生效的hook的更新队列
   const pendingQueue = queue.pending;
   // 初始化一个新的状态，取值为当前的状态
   let newState = current.memoizedState;
@@ -94,9 +96,11 @@ function dispatchReducerAction(fiber, queue, action) {
  * 更新视图
  * 函数组件的fiber.memoizedState存放的hooks单向链表
  * 每个hook.memoizedState存放的当前hook的状态
+ * memoizedState 指向链表的头部
+ * workInProgressHook 指向链表的最后一个
  */
 function updateWorkInProgressHook() {
-  if (current === null) {
+  if (currentHook === null) {
     const current = currentlyRenderingFiber.alternate;
     currentHook = current.memoizedState;
   } else {
@@ -108,8 +112,6 @@ function updateWorkInProgressHook() {
     next: null,
   };
   if (workInProgressHook === null) {
-    // memoizedState指向链表的头部
-    // workInProgressHook 指向链表的最后一个
     currentlyRenderingFiber.memoizedState = workInProgressHook = newHook;
   } else {
     workInProgressHook = workInProgressHook.next = newHook;
@@ -158,5 +160,6 @@ export function renderWithHooks(current, workInProgress, Component, props) {
   const children = Component(props);
   currentlyRenderingFiber = null;
   workInProgressHook = null;
+  currentHook = null;
   return children;
 }
