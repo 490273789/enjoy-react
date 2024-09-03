@@ -32,6 +32,8 @@ function ReactElement(type, key, ref, props) {
 
 /**
  * react17之前为createReactElement()
+ * 在react17以前key放在config中，第三个参数放children
+ * 在react17以后key放在第三个参数中，children放在config中
  * @param type 标签类型 - div span等
  * @param config 配置项
  * @returns {{ref, $$typeof: symbol, type, key, props}}

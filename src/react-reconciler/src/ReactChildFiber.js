@@ -4,7 +4,7 @@ import {
   createFiberFromText,
   createWorkInProgress,
 } from "./ReactFiber";
-import {Placement} from "react-reconcile/src/ReactFiberFlags";
+import {Placement, ChildDeletion} from "react-reconcile/src/ReactFiberFlags";
 import isArray from "shared/isArray";
 
 /**
@@ -17,6 +17,17 @@ function createChildReconciler(shouldTrackSideEffects) {
     clone.index = 0;
     clone.sibling = null;
     return clone;
+  }
+
+  function deleteChild(returnFiber, childToDelete) {
+    if (!shouldTrackSideEffects) return;
+    const deletions = returnFiber.deletions;
+    if (deletions === null) {
+      returnFiber.deletions = [childToDelete];
+      returnFiber.flags |= ChildDeletion;
+    } else {
+      returnFiber.deletions.push(childToDelete);
+    }
   }
   /**
    * 协调单个节点
@@ -41,6 +52,8 @@ function createChildReconciler(shouldTrackSideEffects) {
           existing.return = returnFiber;
           return existing;
         }
+      } else {
+        deleteChild(returnFiber, child);
       }
       child = child.sibling;
     }

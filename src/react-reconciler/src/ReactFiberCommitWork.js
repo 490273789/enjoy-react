@@ -15,7 +15,89 @@ import {
   commitUpdate,
 } from "react-dom-bindings/src/client/ReactDOMHostConfig";
 
+let hostParent = null;
+
+/**
+ * 提交删除副作用
+ * @param {*} root 跟节点
+ * @param {*} returnFiber 父fiber
+ * @param {*} deleteFiber 删除的fiber
+ */
+function commitDeletionEffects(root, returnFiber, deleteFiber) {
+  let parent = returnFiber;
+  findParent: while (parent !== null) {
+    switch (parent.tag) {
+      case HostComponent: {
+        hostParent = parent.stateNode;
+        break findParent;
+      }
+      case HostRoot: {
+        hostParent = parent.stateNode.containerInfo;
+        break findParent;
+      }
+    }
+    parent = parent.return;
+  }
+  commitDeletionEffectsOnFiber(root, returnFiber, deleteFiber);
+  hostParent = null;
+}
+
+function commitDeletionEffectsOnFiber(
+  finishedRoot,
+  nearestMountedAncestor,
+  deletedFiber,
+) {
+  switch (deletedFiber.tag) {
+    case HostComponent:
+    case HostText: {
+      // 删除节点的时候先删除他的子节点
+      recursivelyTraverseDeletionEffects(
+        finishedRoot,
+        nearestMountedAncestor,
+        deletedFiber,
+      );
+      if (hostParent !== null) {
+        removeChild(hostParent, deletedFiber.stateNode);
+      }
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+/**
+ * 递归删除子节点
+ * 因为子节点不一定是原生DOM借点
+ * @param {*} finishedRoot
+ * @param {*} nearestMountedAncestor
+ * @param {*} parent
+ */
+function recursivelyTraverseDeletionEffects(
+  finishedRoot,
+  nearestMountedAncestor,
+  parent,
+) {
+  let child = parent.child;
+  while (child !== null) {
+    commitDeletionEffectsOnFiber(finishedRoot, nearestMountedAncestor, child);
+    child = child.sibling;
+  }
+}
+/**
+ * 递归遍历处理变更的副作用
+ * @param {*} root
+ * @param {*} parentFiber
+ */
 function recursivelyTraverseMutationEffects(root, parentFiber) {
+  // 先删除父fiber上需要删除的节点
+  const deletions = parentFiber.deletions;
+  if (deletions !== null) {
+    for (let i = 0; i < deletions.length; i++) {
+      const childToDelete = deletions[i];
+      commitDeletionEffects(root, parentFiber, childToDelete);
+    }
+  }
   if (parentFiber.subtreeFlags & MutationMask) {
     let {child} = parentFiber;
     while (child !== null) {
