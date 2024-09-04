@@ -55,9 +55,9 @@ export function jsxDEV(type, config, maybeKey) {
   }
 
   // props中的key优先级比显示的使用key优先级高
-  if (hasValidateKey(config)) {
-    key = "" + config.key;
-  }
+  // if (hasValidateKey(config)) {
+  //   key = "" + config.key;
+  // }
 
   // 校验ref,获取ref
   if (hasValidateRef(config)) {

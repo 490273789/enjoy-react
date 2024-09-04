@@ -13,6 +13,7 @@ import {
   appendChild,
   insertBefore,
   commitUpdate,
+  removeChild,
 } from "react-dom-bindings/src/client/ReactDOMHostConfig";
 
 let hostParent = null;
@@ -25,6 +26,7 @@ let hostParent = null;
  */
 function commitDeletionEffects(root, returnFiber, deleteFiber) {
   let parent = returnFiber;
+  // 向上查找真实的DOM父节点
   findParent: while (parent !== null) {
     switch (parent.tag) {
       case HostComponent: {
@@ -50,12 +52,17 @@ function commitDeletionEffectsOnFiber(
   switch (deletedFiber.tag) {
     case HostComponent:
     case HostText: {
-      // 删除节点的时候先删除他的子节点
+      // const prevHostParent = hostParent;
+      // hostParent = null;
+      // 删除节点的时候先删除他的子节点，再删除自己
+      // 因为如果子节点是函数组件或者类组件需要处理生命周期等操作
       recursivelyTraverseDeletionEffects(
         finishedRoot,
         nearestMountedAncestor,
         deletedFiber,
       );
+      // hostParent = prevHostParent;
+      // 删除自己
       if (hostParent !== null) {
         removeChild(hostParent, deletedFiber.stateNode);
       }
@@ -140,7 +147,6 @@ function insertOrAppendPlacementNode(node, before, parent) {
   const isHost = tag === HostComponent || tag === HostText;
   if (isHost) {
     const {stateNode} = node;
-    appendChild(parent, stateNode);
     if (before) {
       insertBefore(parent, stateNode, before);
     } else {
@@ -175,12 +181,14 @@ function getHostSibling(fiber) {
       }
       node = node.return;
     }
+    node.sibling.return = node.return;
     node = node.sibling;
     while (node.tag !== HostComponent && node.tag !== HostText) {
       // 如果当前的节点是要插入的节点，就不用往下看了
       if (node.flags & Placement) {
         continue siblings;
       } else {
+        node.child.return = node;
         node = node.child;
       }
     }
@@ -219,6 +227,7 @@ function commitPlacement(finishedWork) {
 export function commitMutationEffectsOnFiber(finishedWork, root) {
   const current = finishedWork.alternate;
   const flags = finishedWork.flags;
+
   switch (finishedWork.tag) {
     case FunctionComponent:
     case HostRoot:
@@ -227,8 +236,8 @@ export function commitMutationEffectsOnFiber(finishedWork, root) {
       recursivelyTraverseMutationEffects(root, finishedWork);
       // 在处理自己身上的副作用
       commitReconciliationEffects(finishedWork);
+      return;
     }
-
     case HostComponent: {
       // 先递归遍历他们的子节点，处理他们的子节点上的副作用
       recursivelyTraverseMutationEffects(root, finishedWork);
@@ -256,6 +265,7 @@ export function commitMutationEffectsOnFiber(finishedWork, root) {
           }
         }
       }
+      return;
     }
     default:
       break;

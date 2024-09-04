@@ -7,6 +7,7 @@ import {
   NoFlags,
   Placement,
   Update,
+  ChildDeletion,
 } from "react-reconcile/src/ReactFiberFlags";
 import {commitMutationEffectsOnFiber} from "./ReactFiberCommitWork";
 import {
@@ -149,12 +150,14 @@ function printFinishedWork(fiber) {
   }
 
   if (fiber.flags !== 0) {
-    console.log(getFlags(fiber.flags), getTag(fiber.tag), fiber.memoizedProps);
+    console.log(getFlags(fiber), getTag(fiber.tag), fiber.memoizedProps);
   }
 }
 
 function getTag(tag) {
   switch (tag) {
+    case FunctionComponent:
+      return "FunctionComponent";
     case HostRoot:
       return "HostRoot";
     case HostComponent:
@@ -167,11 +170,17 @@ function getTag(tag) {
       return tag;
   }
 }
-function getFlags(flags) {
+function getFlags(fiber) {
+  const {flags, deletions} = fiber;
   if (flags === Placement) {
     return "插入";
   } else if (flags === Update) {
     return "更新";
+  } else if (flags === ChildDeletion) {
+    return (
+      "子节点删除 " +
+      deletions.map((fiber) => `${fiber.type} # ${fiber.memoizedProps.id}`)
+    );
   }
   return flags;
 }

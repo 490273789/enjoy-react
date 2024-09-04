@@ -42,7 +42,7 @@ function FiberNode(tag, pendingProps, key) {
   this.flags = NoFlags;
   // 子节点的副作用标识，性能优化字段，如果这个字段是0，那么标识子节点没有副作用，就不需要处理子节点的副作用了
   this.subtreeFlags = NoFlags;
-  this.deletions = null; // 存储将要被删除的子节点. 默认未开启
+  this.deletions = null; // 存储将要被删除的子节点.
   // 本 fiber 节点所属的优先级, 创建 fiber 的时候设置.
   // this.lanes = NoLanes;
   // this.childLanes = NoLanes; // 子节点所属的优先级
@@ -88,6 +88,7 @@ export function createWorkInProgress(current, pendingProps) {
   if (workInProgress === null) {
     // 创建新fiber
     workInProgress = createFiber(current.tag, pendingProps, current.key);
+    workInProgress.elementType = current.elementType;
     workInProgress.type = current.type;
     workInProgress.stateNode = current.stateNode;
     workInProgress.alternate = current;
@@ -98,6 +99,7 @@ export function createWorkInProgress(current, pendingProps) {
     workInProgress.type = current.type;
     workInProgress.flags = NoFlags;
     workInProgress.subtreeFlags = NoFlags;
+    workInProgress.deletions = null;
   }
   workInProgress.child = current.child;
   workInProgress.memoizedProps = current.memoizedProps;

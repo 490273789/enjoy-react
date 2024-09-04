@@ -12,13 +12,6 @@ import isArray from "shared/isArray";
  * @param shouldTrackSideEffects 是否跟踪副作用
  */
 function createChildReconciler(shouldTrackSideEffects) {
-  function useFiber(current, pendingProps) {
-    const clone = createWorkInProgress(current, pendingProps);
-    clone.index = 0;
-    clone.sibling = null;
-    return clone;
-  }
-
   function deleteChild(returnFiber, childToDelete) {
     if (!shouldTrackSideEffects) return;
     const deletions = returnFiber.deletions;
@@ -26,11 +19,35 @@ function createChildReconciler(shouldTrackSideEffects) {
       returnFiber.deletions = [childToDelete];
       returnFiber.flags |= ChildDeletion;
     } else {
-      returnFiber.deletions.push(childToDelete);
+      deletions.push(childToDelete);
     }
   }
+
+  function useFiber(current, pendingProps) {
+    const clone = createWorkInProgress(current, pendingProps);
+    clone.index = 0;
+    clone.sibling = null;
+    return clone;
+  }
+
   /**
-   * 协调单个节点
+   * 删除currentFirstFiber以及之后的所有的fiber节点
+   * @param {*} returnFiber
+   * @param {*} currentFirstFiber
+   * @returns
+   */
+  function deleteRemainingChild(returnFiber, currentFirstFiber) {
+    if (!shouldTrackSideEffects) return;
+    let childToDelete = currentFirstFiber;
+    while (childToDelete !== null) {
+      deleteChild(returnFiber, childToDelete);
+      childToDelete = childToDelete.sibling;
+    }
+    return null;
+  }
+
+  /**
+   * 协调单个节点(只有一个节点的情况)
    * 使用当前的fiber和新的VDOM进行对比，因为如果fiber可以复用的情况下就不需要在创建fiber
    * @param {*} returnFiber 新的父fiber
    * @param {*} currentFirstFiber 当前fiber的第一个子fiber， 初次挂在是null
@@ -40,6 +57,7 @@ function createChildReconciler(shouldTrackSideEffects) {
   function reconcileSingleElement(returnFiber, currentFirstFiber, element) {
     // DOM diff
     // 因为都是同一个节点的子节点，所如果key相同就是同一个节点
+    // debugger;
     const key = element.key; // VDOM的可以
     let child = currentFirstFiber;
     while (child !== null) {
@@ -47,10 +65,15 @@ function createChildReconciler(shouldTrackSideEffects) {
       if (child.key === key) {
         // 当前fiber 的type和 新VDOM的的类型是否相同，相同则可复用当前节点，然后删除多余的节点
         if (child.type === element.type) {
+          deleteRemainingChild(returnFiber, child.sibling);
           // key 和type都一样 - 可复用
           const existing = useFiber(child, element.props);
           existing.return = returnFiber;
           return existing;
+        } else {
+          // key相同，但是type不同，删除多余的节点
+          deleteRemainingChild(returnFiber, child);
+          break;
         }
       } else {
         deleteChild(returnFiber, child);
@@ -157,7 +180,6 @@ function createChildReconciler(shouldTrackSideEffects) {
    * @param newChild 新fiber的子虚拟DOM
    */
   function reconcileChildFibers(returnFiber, currentFirstFiber, newChild) {
-    // TODO:现在只考虑新节点只有一个的情况
     if (typeof newChild === "object" && newChild !== null) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
