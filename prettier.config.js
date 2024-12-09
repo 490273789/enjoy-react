@@ -1,5 +1,6 @@
 export default {
-  bracketSpacing: false,
-  jsxBracketSameLine: true,
   printWidth: 80,
+  tabWidth: 2,
+  bracketSpacing: true,
+  jsxBracketSameLine: true,
 };
