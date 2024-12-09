@@ -6,20 +6,36 @@ function reducer(state, action) {
   else return state;
 }
 
-function App() {
-  const [number1, dispatch1] = React.useReducer(reducer, 0);
-  console.log("number1:", number1);
+function FunctionComponent() {
+  // const [number1, dispatch1] = React.useReducer(reducer, 0);
+  const [age, setAge] = React.useState(18);
+  // console.log("number1:", number1);
   // const [number2, dispatch2] = React.useReducer(reducer, 0);
 
-  return (
-    <button
-      onClick={() => {
-        dispatch1({type: "add", payload: 1});
-        dispatch1({type: "add", payload: 2});
-        dispatch1({type: "add", payload: 3});
-      }}>
-      {number1}
-    </button>
+  return age === 18 ? (
+    <ul>
+      <li key="A" onClick={() => setAge(age + 1)}>
+        A
+      </li>
+      <li key="B">B</li>
+      <li key="C">C</li>
+      <li key="D">D</li>
+      <li key="E">E</li>
+      <li key="F" id="F">
+        F
+      </li>
+    </ul>
+  ) : (
+    <ul>
+      <li key="A">A2</li>
+      <li key="C">C2</li>
+      <li key="E">E2</li>
+      <li key="B" id="B">
+        B2
+      </li>
+      <li key="G">G</li>
+      <li key="D">D2</li>
+    </ul>
   );
   // return (
   //   <h2
@@ -37,7 +53,7 @@ function App() {
 }
 
 // jsx写法
-const element = <App />;
+const element = <FunctionComponent />;
 
 // js写法
 // const element = React.createElement(App);
@@ -55,7 +71,7 @@ const element = <App />;
 console.log("虚拟DOM:", element);
 // debugger;
 // createRoot返回 ReactDOMRoot 实例上面又render方法 和 根节点的Fiber
-const root = createRoot(document.querySelector("#root"));
+const root = createRoot(document.getElementById("root"));
 console.log(root);
 // 把虚拟dom渲染到容器中
 root.render(element);
