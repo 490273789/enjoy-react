@@ -18,7 +18,7 @@ export default [
     ],
   },
   {
-    languageOptions: { globals: globals.browser },
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
     plugins: {
       import: importOrder,
     },
