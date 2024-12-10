@@ -15,5 +15,6 @@ pnpm add vitest -D -w
 - 给scheduler 安装shared依赖
 
 ```bash
-pnpm add shared --filter scheduler
+pnpm --filter scheduler add shared
+pnpm --filter pkgName add react
 ```

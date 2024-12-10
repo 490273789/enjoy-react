@@ -18,7 +18,7 @@ const reactPkg = {
   output: {
     file: `${pkgDistPath}/index.js`,
     name: "React",
-    format: "umd",
+    format: "es",
   },
   plugins: [
     ...getBaseRollupPlugins(),
@@ -40,7 +40,7 @@ const jsxDevRuntime = {
   output: {
     file: `${pkgDistPath}/jsx-dev-runtime.js`,
     name: "jsx-dev-runtime.js",
-    format: "umd",
+    format: "es",
   },
   plugins: getBaseRollupPlugins(),
 };
@@ -50,7 +50,7 @@ const jsxRuntime = {
   output: {
     file: `${pkgDistPath}/jsx-runtime.js`,
     name: "jsx-runtime.js",
-    format: "umd",
+    format: "es",
   },
   plugins: getBaseRollupPlugins(),
 };
