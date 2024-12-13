@@ -1,5 +1,5 @@
 // 在react17之前,babel转换的是老的写法
-const babel = require('@babel/core');
+import babel from "@babel/core";
 const sourceCode = `
 <h1>
     hello,
@@ -8,12 +8,18 @@ const sourceCode = `
     </span>
   </h1>
 `;
-/** 将jsx转换为js代码 */
-const result = babel.transform(sourceCode, {
-  plugins: [['@babel/plugin-transform-react-jsx', {runtime: 'automatic'}]],
-});
 
-console.log(result.code);
+const transform = (type) =>
+  babel.transform(sourceCode, {
+    plugins: [["@babel/plugin-transform-react-jsx", { runtime: type }]],
+  });
+/** 将jsx转换为js代码 */
+const react16 = transform("classic");
+
+const react18 = transform("automatic");
+
+console.log(react16.code);
+console.log(react18.code);
 
 // classic - 老版本 17之前
 // /*#__PURE__*/React.createElement("h1", null, "hello ", /*#__PURE__*/React.createElement("span", {
