@@ -120,7 +120,6 @@ export function jsxDEV(
   // Remaining properties are added to a new props object
   // remaining - adj. 剩余的
   for (propName in config) {
-    // 是props自身属性，并且是不是保留的属性
     if (
       hasOwnProperty.call(config, propName) &&
       !RESERVED_PROPS.hasOwnProperty(propName)
