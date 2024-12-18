@@ -4,20 +4,21 @@ import {
   HostText,
   IndeterminateComponent,
 } from "./ReactWorkTags";
-import {NoFlags} from "./ReactFiberFlags";
+import { NoFlags } from "./ReactFiberFlags";
 
 // 每种虚拟DOM都会有自己Fiber Tag类型
 function FiberNode(tag, pendingProps, key) {
-  this.tag = tag; // fiber的标签，根据ReactElement的type进行生成,共有25种tag：根元素 - 3，函数组件 - 0
+  this.tag = tag; // fiber的标签，共有25种tag：根元素 - 3，函数组件 - 0, HostText
   this.key = key; // 唯一标识，和ReactElement组件的key一致
-  this.elementType; // 一般来讲和ReactElement的key一致
-  // fiber类型，来自于虚拟DOM的type，一般和fiber.elementType一致(dev环境又特殊处理).
+  this.elementType = null; // 一般来讲和ReactElement的key一致
+  // fiber类型，一般和fiber.elementType一致(dev环境又特殊处理).
   // 原生组件：div、span...
   // 函数组件：函数本身
   this.type = null;
   // fiber对应的真实DOM节点，根节点fiber.stateNode指向的是FiberRoot; class 类型节点其stateNode指向的是 class 实例
   this.stateNode = null;
 
+  // 组成树状结构
   this.return = null; // 指向父节点
   this.child = null; // 指向 第一个 子节点
   this.sibling = null; // 指向下一个兄弟节点
@@ -25,6 +26,7 @@ function FiberNode(tag, pendingProps, key) {
 
   this.ref = null; // 指向在ReactElement组件上设置的ref
 
+  // 作为工作单元
   // 等待生效的属性， 从ReactElement对象传入的 props，用于和fiber.memoizedProps比较可以得出属性是否变动.
   this.pendingProps = pendingProps;
   // 生成子节点时的属性, 生成子节点之后保持在内存中. 在生成子节点前叫做pendingProps, 生成子节点后会把pendingProps赋值给memoizedProps用于下一次比较.
@@ -117,7 +119,7 @@ export function createWorkInProgress(current, pendingProps) {
  * @returns fiber
  */
 export function createFiberFromElement(element) {
-  const {type, key, props: pendingProps} = element;
+  const { type, key, props: pendingProps } = element;
   return createFiberFromTypeAndProps(type, key, pendingProps);
 }
 

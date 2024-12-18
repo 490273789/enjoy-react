@@ -6,6 +6,6 @@
 
 ## 流程
 
-> 用户编写jsx -> 打包的时候babel转义(jsxDEV) -> 浏览器运行(虚拟DOM)
+> 用户编写jsx -> 打包的时候babel转义(jsxDEV)成ReactElement -> 浏览器运行 ReactElement 生成Fiber(虚拟DOM) ->展现给用户 真实的DOM元素
 
 ![Alt text](image.png)

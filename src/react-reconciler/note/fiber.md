@@ -37,6 +37,9 @@
 - 初始化姐阶段： 主要作用是创建fiber树，会处理当前节点的子节点，如果有多个子节点，将子节点用sibling连接，子节点的return指向自己，同时会处理fiber的memoizedState和index等属性
 - 更新阶段：dom diff
 - 处理自身的副作用添加到flags属性上
+- 这一阶段主要处理结构相关的变化，不包括属性相关的变化
+  - Placement和ChildDeletion两个flags是和结构相关
+  - 对于hostComponent类型的fiber，Update是和属性相关
 
 ### completedWork
 

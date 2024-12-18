@@ -1,4 +1,4 @@
-import {registerTwoPhaseEvent} from "./EventRegistry";
+import { registerTwoPhaseEvent } from "./EventRegistry";
 
 const simpleEventPluginEvents = ["click"];
 // {'click': 'onClick'}

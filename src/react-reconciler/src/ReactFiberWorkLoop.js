@@ -1,7 +1,7 @@
-import {scheduleCallback} from "scheduler";
-import {createWorkInProgress} from "react-reconcile/src/ReactFiber";
-import {beginWork} from "./ReactFiberBeginWork";
-import {completeWork} from "./ReactFiberCompleteWork";
+import { scheduleCallback } from "scheduler";
+import { createWorkInProgress } from "react-reconcile/src/ReactFiber";
+import { beginWork } from "./ReactFiberBeginWork";
+import { completeWork } from "./ReactFiberCompleteWork";
 import {
   MutationMask,
   NoFlags,
@@ -9,14 +9,14 @@ import {
   Update,
   ChildDeletion,
 } from "react-reconcile/src/ReactFiberFlags";
-import {commitMutationEffectsOnFiber} from "./ReactFiberCommitWork";
+import { commitMutationEffectsOnFiber } from "./ReactFiberCommitWork";
 import {
   FunctionComponent,
   HostComponent,
   HostRoot,
   HostText,
 } from "react-reconcile/src/ReactWorkTags";
-import {finishQueueingConcurrentUpdates} from "./ReactFiberConcurrentUpdates";
+import { finishQueueingConcurrentUpdates } from "./ReactFiberConcurrentUpdates";
 
 let workInProgress = null;
 let workInProgressRoot = null;
@@ -62,11 +62,19 @@ function performConcurrentWorkOnRoot(root) {
  */
 function renderRootSync(root) {
   prepareFreshStack(root);
-  workLoopSync();
+  do {
+    try {
+      workLoopSync();
+      break;
+    } catch (err) {
+      console.warn("执行错误", err);
+      workInProgress = null;
+    }
+  } while (true);
 }
 
 /**
- * 准备fiber树的跟fiber - HostRootFiber
+ * 初始化的时准备fiber树的跟fiber - HostRootFiber
  * @param {*} root
  */
 function prepareFreshStack(root) {
@@ -88,7 +96,7 @@ function workLoopSync() {
  * @param {*} root 根节点
  */
 function commitRoot(root) {
-  const {finishedWork} = root;
+  const { finishedWork } = root;
   printFinishedWork(finishedWork);
   const subtreeHasEffect =
     (finishedWork.subtreeFlags & MutationMask) !== NoFlags;
@@ -156,8 +164,6 @@ function printFinishedWork(fiber) {
 
 function getTag(tag) {
   switch (tag) {
-    case FunctionComponent:
-      return "FunctionComponent";
     case HostRoot:
       return "HostRoot";
     case HostComponent:
@@ -171,7 +177,7 @@ function getTag(tag) {
   }
 }
 function getFlags(fiber) {
-  const {flags, deletions} = fiber;
+  const { flags, deletions } = fiber;
   if (flags === Placement) {
     return "插入";
   } else if (flags === Update) {

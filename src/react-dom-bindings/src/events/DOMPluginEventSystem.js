@@ -1,10 +1,13 @@
-import {allNativeEvents} from "./EventRegistry";
+import { allNativeEvents } from "./EventRegistry";
 import * as SimpleEventPlugin from "./plugins/SimpleEventPlugin";
-import {IS_CAPTURE_PHASE} from "./EventSystemFlags";
-import {createEventListenerWrapperWithPriority} from "./ReactDOMEventListener";
-import {addEventCaptureListener, addEventBubbleListener} from "./EventListener";
-import {getEventTarget} from "./getEventTarget";
-import {HostComponent} from "react-reconcile/src/ReactWorkTags";
+import { IS_CAPTURE_PHASE } from "./EventSystemFlags";
+import { createEventListenerWrapperWithPriority } from "./ReactDOMEventListener";
+import {
+  addEventCaptureListener,
+  addEventBubbleListener,
+} from "./EventListener";
+import { getEventTarget } from "./getEventTarget";
+import { HostComponent } from "react-reconcile/src/ReactWorkTags";
 import getListener from "./getListener";
 
 /** 初始化调用收集事件名称 */
@@ -69,7 +72,7 @@ function processDispatchQueueItemsInOrder(
   // 捕获阶段，数组倒着执行，因为是从事件源开始收集的
   if (inCapturePhase) {
     for (let i = dispatchListeners.length - 1; i >= 0; i--) {
-      const {listener, currentTarget} = dispatchListeners[i];
+      const { listener, currentTarget } = dispatchListeners[i];
       // 目标函数肯定会执行一次，在监听函数中设置阻止冒泡，他的下一个监听函数就不会在执行了
       if (event.isPropagationStopped()) {
         return;
@@ -79,7 +82,7 @@ function processDispatchQueueItemsInOrder(
   } else {
     // 冒泡阶段数组从头开始以此执行
     for (let i = 0; i < dispatchListeners.length; i++) {
-      const {listener, currentTarget} = dispatchListeners[i];
+      const { listener, currentTarget } = dispatchListeners[i];
       if (event.isPropagationStopped()) {
         return;
       }
@@ -96,7 +99,7 @@ function processDispatchQueueItemsInOrder(
 function processDispatchQueue(dispatchQueue, eventSystemFlags) {
   const inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
   for (let i = 0; i < dispatchQueue.length; i++) {
-    const {event, listeners} = dispatchQueue[i];
+    const { event, listeners } = dispatchQueue[i];
     processDispatchQueueItemsInOrder(event, listeners, inCapturePhase);
   }
 }
@@ -263,7 +266,7 @@ export function accumulateSinglePhaseListeners(
   // 从事件源向上遍历，获取每个dom上绑定的事件
   while (instance !== null) {
     // stateNode 真实DOM节点
-    const {stateNode, tag} = instance;
+    const { stateNode, tag } = instance;
     // HostComponent 原生标签
     if (tag === HostComponent && stateNode !== null) {
       // 获取props中的事件名称对应的函数 <div onClick={() => 1}>
