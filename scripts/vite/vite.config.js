@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import replace from "@rollup/plugin-replace";
 import { resolvePkgPath } from "../rollup/utils";
-// import path from "path";
+import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -27,13 +27,13 @@ export default defineConfig({
       //   find: "react-noop-renderer",
       //   replacement: resolvePkgPath("react-noop-renderer"),
       // },
-      // {
-      //   find: "hostConfig",
-      //   replacement: path.resolve(
-      //     resolvePkgPath("react-dom"),
-      //     "./src/hostConfig.ts",
-      //   ),
-      // },
+      {
+        find: "ReactDOMHostConfig",
+        replacement: path.resolve(
+          resolvePkgPath("react-dom"),
+          "./src/client/ReactDOMHostConfig.ts",
+        ),
+      },
     ],
   },
 });
