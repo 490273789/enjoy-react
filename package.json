@@ -7,7 +7,7 @@
   "private": "true",
   "scripts": {
     "dev": "vite --force",
-    "demo": "vite serve examples/test-fc --config scripts/vite/vite.config.js --force",
+    "demo": "vite serve examples/test-code --config scripts/vite/vite.config.js --force",
     "eslint": "eslint --fix '**/src/*.{js,jsx,ts,tsx}'",
     "eslint:ci": "eslint '**/src/*.{js,jsx,ts,tsx}'",
     "prettier": "prettier '**/{examples,src,__tests__,website}/**/*.{js,jsx,ts,tsx,md}' --write",
