@@ -2,7 +2,7 @@ import {
   createContainer,
   updateContainer,
 } from "react-reconcile/src/ReactFiberReconciler";
-import {listenToAllSupportedEvents} from "react-dom-bindings/src/events/DOMPluginEventSystem";
+import { listenToAllSupportedEvents } from "react-dom-bindings/src/events/DOMPluginEventSystem";
 
 /**
  * 定义react的根节点对象
