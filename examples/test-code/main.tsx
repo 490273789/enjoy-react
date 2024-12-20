@@ -1,4 +1,5 @@
-// import ReactDOM from "react-dom";
+import React from "react";
+import { createRoot } from "react-dom/client";
 
 // function App() {
 //   return <div>react</div>;
@@ -16,6 +17,7 @@ console.log("[ element ] >", element);
 //   return <li>{children}</li>;
 // }
 
-// const root = ReactDOM.createRoot(document.querySelector("#root"));
+const root = createRoot(document.querySelector("#root")!);
+console.log("[ root ] >", root);
 
 // root.render(<App />);

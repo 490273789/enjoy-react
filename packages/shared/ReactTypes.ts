@@ -7,8 +7,12 @@ export type Source = {
 export type ReactNode = ReactElement | ReactText | ReactFragment;
 
 export type ReactEmpty = null | void | boolean;
-export type ReactFragment = ReactEmpty;
+
+export type ReactFragment = ReactEmpty | Iterable<ReactNode>;
+
 export type ReactText = string | number;
+
+export type ReactNodeList = ReactEmpty | ReactNode;
 
 export type RefObject = {
   current: any;

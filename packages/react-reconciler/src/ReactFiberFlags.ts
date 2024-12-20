@@ -1,3 +1,5 @@
+export type Flags = number;
+
 export const NoFlags = 0b00000000000000000000000000;
 // You can change the rest (and add more).
 export const Placement = 0b00000000000000000000000010; // 添加新节点
