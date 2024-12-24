@@ -22,7 +22,7 @@ export function createContainer(containerInfo: Container): OpaqueRoot {
  * @param container 要更新的容器对象
  */
 export function updateContainer(element: ReactNodeList, container: OpaqueRoot) {
-  const current = container.containerInfo;
+  const current = container.current;
 
   const update = createUpdate();
 
