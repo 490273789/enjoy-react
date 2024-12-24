@@ -2,7 +2,7 @@ import { Container } from "ReactDOMHostConfig";
 import { FiberRoot } from "./ReactInternalTypes";
 
 /** 根Fiber的节点类 */
-function FiberRootNode(this: any, containerInfo: Container) {
+function FiberRootNode(this: FiberRoot, containerInfo: Container) {
   this.containerInfo = containerInfo;
 }
 
