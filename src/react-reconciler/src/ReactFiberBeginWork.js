@@ -1,4 +1,4 @@
-import logger, {indent} from "shared/logger";
+import logger, { indent } from "shared/logger";
 import {
   HostRoot,
   HostComponent,
@@ -6,13 +6,13 @@ import {
   IndeterminateComponent,
   FunctionComponent,
 } from "react-reconcile/src/ReactWorkTags";
-import {processUpdateQueue} from "./ReactFiberClassUpdateQueue";
+import { processUpdateQueue } from "./ReactFiberClassUpdateQueue";
 import {
   mountChildFibers,
   reconcileChildFibers,
 } from "react-reconcile/src/ReactChildFiber";
-import {renderWithHooks} from "./ReactFiberHooks";
-import {shouldSetTextContent} from "react-dom-bindings/src/client/ReactDOMHostConfig";
+import { renderWithHooks } from "./ReactFiberHooks";
+import { shouldSetTextContent } from "react-dom-bindings/src/client/ReactDOMHostConfig";
 
 /**
  * 根据新的虚拟DOM生成新的fiber链表
@@ -90,7 +90,7 @@ export function updateFunctionComponent(
  * @param workInProgress 新fiber
  */
 function updateHostComponent(current, workInProgress) {
-  const {type} = workInProgress;
+  const { type } = workInProgress;
   const nextProps = workInProgress.pendingProps;
   let nextChildren = nextProps.children; // 子虚拟DOM
   // 如果子节点是一个文本节点, 优化处理

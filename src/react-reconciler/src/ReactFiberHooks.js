@@ -1,8 +1,8 @@
 import ReactSharedInternals from "shared/ReactSharedInternals";
-import {scheduleUpdateOnFiber} from "react-reconcile/src/ReactFiberWorkLoop";
-import {enqueueCurrentHookUpdate} from "./ReactFiberConcurrentUpdates";
+import { scheduleUpdateOnFiber } from "react-reconcile/src/ReactFiberWorkLoop";
+import { enqueueCurrentHookUpdate } from "./ReactFiberConcurrentUpdates";
 
-const {ReactCurrentDispatcher} = ReactSharedInternals;
+const { ReactCurrentDispatcher } = ReactSharedInternals;
 // 当前正在渲染中的fiber
 let currentlyRenderingFiber = null;
 let workInProgressHook = null;
@@ -53,7 +53,7 @@ function dispatchSetState(fiber, queue, action) {
     eagerState: null,
     next: null,
   };
-  const {lastRenderedReducer, lastRenderedState} = queue;
+  const { lastRenderedReducer, lastRenderedState } = queue;
 
   const eagerState = lastRenderedReducer(lastRenderedState, action);
   update.hasEagerState = true;

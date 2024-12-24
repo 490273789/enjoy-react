@@ -1,4 +1,4 @@
-import logger, {indent} from "shared/logger";
+import logger, { indent } from "shared/logger";
 import {
   HostComponent,
   HostRoot,
@@ -13,7 +13,7 @@ import {
   finalizeInitialChildren,
   prepareUpdate,
 } from "react-dom-bindings/src/client/ReactDOMHostConfig";
-import {NoFlags, Update} from "react-reconcile/src/ReactFiberFlags";
+import { NoFlags, Update } from "react-reconcile/src/ReactFiberFlags";
 
 /**
  * 将fiber的所有子节点对应的真实节点挂在到自己的DOM上
@@ -89,7 +89,7 @@ export function completeWork(current, workInProgress) {
       bubbleProperties(workInProgress);
       break;
     case HostComponent:
-      const {type} = workInProgress;
+      const { type } = workInProgress;
       // 更新的逻辑
       if (current !== null && workInProgress.stateNode !== null) {
         updateHostComponent(current, workInProgress, type, newProps);

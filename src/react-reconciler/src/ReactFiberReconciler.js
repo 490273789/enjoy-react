@@ -1,6 +1,6 @@
-import {createFiberRoot} from "react-reconcile/src/ReactFiberRoot";
-import {createUpdate, enqueueUpdate} from "./ReactFiberClassUpdateQueue";
-import {scheduleUpdateOnFiber} from "./ReactFiberWorkLoop";
+import { createFiberRoot } from "react-reconcile/src/ReactFiberRoot";
+import { createUpdate, enqueueUpdate } from "./ReactFiberClassUpdateQueue";
+import { scheduleUpdateOnFiber } from "./ReactFiberWorkLoop";
 
 /**
  * 创建根容器
@@ -22,7 +22,7 @@ export function updateContainer(element, container) {
   // 创建一个update对象
   const update = createUpdate();
   // 需要更新的ReactElement对象
-  update.payload = {element};
+  update.payload = { element };
   // 把创建的update对象添加到根fiber的updateQueue上， 返回根节点
   const root = enqueueUpdate(current, update);
   scheduleUpdateOnFiber(root);

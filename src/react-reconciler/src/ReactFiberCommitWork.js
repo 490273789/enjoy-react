@@ -106,7 +106,7 @@ function recursivelyTraverseMutationEffects(root, parentFiber) {
     }
   }
   if (parentFiber.subtreeFlags & MutationMask) {
-    let {child} = parentFiber;
+    let { child } = parentFiber;
     while (child !== null) {
       commitMutationEffectsOnFiber(child, root);
       child = child.sibling;
@@ -115,7 +115,7 @@ function recursivelyTraverseMutationEffects(root, parentFiber) {
 }
 
 function commitReconciliationEffects(finishedWork) {
-  const {flags} = finishedWork;
+  const { flags } = finishedWork;
   if (flags & Placement) {
     commitPlacement(finishedWork);
     // 删除flags里的Placement
@@ -143,20 +143,20 @@ function getHostParentFiber(fiber) {
  * @param parent 父节点 - 已确认过是真实DOM节点
  */
 function insertOrAppendPlacementNode(node, before, parent) {
-  const {tag} = node;
+  const { tag } = node;
   const isHost = tag === HostComponent || tag === HostText;
   if (isHost) {
-    const {stateNode} = node;
+    const { stateNode } = node;
     if (before) {
       insertBefore(parent, stateNode, before);
     } else {
       appendChild(parent, stateNode);
     }
   } else {
-    const {child} = node;
+    const { child } = node;
     if (child !== null) {
       insertOrAppendPlacementNode(child, before, parent);
-      let {sibling} = child;
+      let { sibling } = child;
       while (sibling !== null) {
         insertOrAppendPlacementNode(sibling, before, parent);
         sibling = sibling.sibling;

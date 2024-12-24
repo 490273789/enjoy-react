@@ -1,4 +1,4 @@
-import {markUpdateLaneFromFiberToRoot} from "./ReactFiberConcurrentUpdates";
+import { markUpdateLaneFromFiberToRoot } from "./ReactFiberConcurrentUpdates";
 import assign from "shared/assign";
 
 export const UpdateState = 0;
@@ -94,7 +94,7 @@ export function processUpdateQueue(fiber) {
 function getStateFromUpdate(update, preState) {
   switch (update.tag) {
     case UpdateState:
-      const {payload} = update;
+      const { payload } = update;
       return assign({}, preState, payload);
     default:
       return preState;

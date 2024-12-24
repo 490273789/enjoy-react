@@ -1,4 +1,4 @@
-import {HostRoot} from "./ReactWorkTags";
+import { HostRoot } from "./ReactWorkTags";
 
 const concurrentQueue = [];
 let concurrentQueuesIndex = 0;
@@ -11,6 +11,7 @@ export function finishQueueingConcurrentUpdates() {
     const fiber = concurrentQueue[i++];
     const queue = concurrentQueue[i++];
     const update = concurrentQueue[i++];
+    console.log("[ fiber ] >", fiber);
     if (queue !== null && update !== null) {
       const pending = queue.pending;
       if (pending === null) {

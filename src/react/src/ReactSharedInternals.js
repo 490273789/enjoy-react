@@ -1,4 +1,4 @@
-import ReactCurrentDispatcher from './ReactCurrentDispatcher';
+import ReactCurrentDispatcher from "./ReactCurrentDispatcher";
 
 const ReactSharedInternals = {
   ReactCurrentDispatcher,
