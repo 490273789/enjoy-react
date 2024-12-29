@@ -5,12 +5,12 @@ import { createRoot } from "react-dom/client";
 //   return <div>react</div>;
 // }
 
-const element = (
+const Element = (
   <div key="1" className="list-wrapper">
     hello <span className="item">react</span>
   </div>
 );
-console.log("[ element ] >", element);
+console.log("[ element ] >", Element);
 // console.log("[ App ] >", <App key={1} />);
 
 // function Child({ children }) {
@@ -20,4 +20,4 @@ console.log("[ element ] >", element);
 const root = createRoot(document.querySelector("#root")!);
 console.log("[ root ] >", root);
 
-// root.render(<App />);
+root.render(Element);

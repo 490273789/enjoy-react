@@ -17,7 +17,10 @@ export function createContainer(containerInfo: Container): OpaqueRoot {
 }
 
 /**
- *
+ * 走更新流程
+ * 1. 创建一个update，并传入更新的内容
+ * 2. 将update放入Fiber的updateQueue中
+ * 3. 调度更新
  * @param element 需要更新的ReactElement
  * @param container 要更新的容器对象
  */
@@ -29,6 +32,7 @@ export function updateContainer(element: ReactNodeList, container: OpaqueRoot) {
   update.payload = { element };
 
   const root = enqueueUpdate(current, update);
+
   if (root !== null) {
     scheduleUpdateOnFiber(root);
   }
