@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const channel = new MessageChannel();
+      const port = channel.port2;
+      channel.port1.onmessage = (msg) => {
+        console.log("port1:", msg);
+      };
+
+      port.postMessage("I'm port2");
+    </script>
+  </body>
+</html>
