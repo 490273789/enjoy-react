@@ -28,6 +28,8 @@ ReactDOMRoot.prototype.render = function (children: ReactNodeList) {
   updateContainer(children, root);
 };
 
+ReactDOMRoot.prototype.unmount = function () {};
+
 /** 创建一个ReactDOMRoot返回 */
 export function createRoot(container: Element | Document | DocumentFragment) {
   const root = createContainer(container);

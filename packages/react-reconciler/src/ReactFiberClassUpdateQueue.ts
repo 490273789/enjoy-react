@@ -70,6 +70,11 @@ export function enqueueUpdate(fiber: Fiber, update: Update): FiberRoot | null {
   return unsafe_markUpdateLaneFromFiberToRoot(fiber);
 }
 
+/**
+ * 消费更新队列
+ * 将当前的fiber的updateQueue中的update数据进行合并
+ * @param fiber
+ */
 export function processUpdateQueue(fiber: Fiber) {
   const queue = fiber.updateQueue;
   const pendingQueue = queue.shared.pending;
@@ -85,6 +90,7 @@ export function processUpdateQueue(fiber: Fiber) {
       newStatus = getStateFromUpdate(update, newStatus);
       update = update.next;
     }
+    fiber.memoizedState = newStatus;
   }
 }
 

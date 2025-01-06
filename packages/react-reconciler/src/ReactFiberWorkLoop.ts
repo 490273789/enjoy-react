@@ -3,7 +3,6 @@ import { scheduleCallback } from "scheduler";
 import { createWorkInProgress } from "./ReactFiber";
 import { beginWork } from "./ReactFiberBeginWork";
 
-// const workInProgress: FiberRoot | null = null;
 let workInProgressRoot: FiberRoot | null = null;
 let workInProgress: Fiber | null = null;
 
@@ -53,7 +52,7 @@ function prepareFreshStack(root: FiberRoot): Fiber {
 
 /** 同步更新的工作循环 */
 function workLoopSync() {
-  if (workInProgress !== null) {
+  while (workInProgress !== null) {
     performUnitOfWork(workInProgress);
   }
 }
@@ -67,8 +66,7 @@ function performUnitOfWork(unitOfWork: Fiber) {
   const next: Fiber | null = beginWork(current, unitOfWork);
   if (next === null) {
     completeUnitOfWork(unitOfWork);
-  }
-  {
+  } else {
     workInProgress = next;
   }
 }

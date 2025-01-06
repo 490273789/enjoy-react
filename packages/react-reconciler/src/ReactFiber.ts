@@ -1,6 +1,13 @@
 import { Fiber } from "./ReactInternalTypes";
-import { HostRoot, WorkTag } from "./ReactWorkTags";
+import {
+  HostComponent,
+  HostRoot,
+  HostText,
+  IndeterminateComponent,
+  WorkTag,
+} from "./ReactWorkTags";
 import { NoFlags } from "./ReactFiberFlags";
+import { ReactElement } from "react";
 
 function FiberNode(
   this: Fiber,
@@ -75,4 +82,40 @@ export function createWorkInProgress(current: Fiber, pendingProps: any) {
   workInProgress.index = current.index;
 
   return workInProgress;
+}
+
+function createFiberFromTypeAndProps(
+  type: any,
+  key: null | string,
+  pendingProps: any,
+) {
+  let fiberTag: WorkTag = IndeterminateComponent;
+  // The resolved type is set if we know what the final type will be. I.e. it's not lazy.
+  const resolvedType = type;
+  if (typeof type === "string") {
+    fiberTag = HostComponent;
+  }
+
+  const fiber = createFiber(fiberTag, pendingProps, key);
+  fiber.elementType = type;
+  fiber.type = resolvedType;
+  return fiber;
+}
+
+export function createFiberFromElement(element: ReactElement) {
+  const type = element.type;
+  const key = element.key;
+  const pendingProps = element.pendingProps;
+  const fiber = createFiberFromTypeAndProps(type, key, pendingProps);
+  return fiber;
+}
+
+/**
+ * 创建一个文本类型的FIber
+ * @param content 文本内容
+ * @returns 文本的Fiber
+ */
+export function createFiberFromText(content: string) {
+  const fiber = createFiber(HostText, content, null);
+  return fiber;
 }
