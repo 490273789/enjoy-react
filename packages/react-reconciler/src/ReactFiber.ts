@@ -7,7 +7,7 @@ import {
   WorkTag,
 } from "./ReactWorkTags";
 import { NoFlags } from "./ReactFiberFlags";
-import { ReactElement } from "react";
+import { ReactElement } from "shared/ReactElementType";
 
 function FiberNode(
   this: Fiber,
@@ -105,7 +105,7 @@ function createFiberFromTypeAndProps(
 export function createFiberFromElement(element: ReactElement) {
   const type = element.type;
   const key = element.key;
-  const pendingProps = element.pendingProps;
+  const pendingProps = element.props;
   const fiber = createFiberFromTypeAndProps(type, key, pendingProps);
   return fiber;
 }
