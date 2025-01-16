@@ -1,7 +1,8 @@
+import { shouldSetTextContent } from "ReactDOMHostConfig";
 import { mountChildrenFibers, reconcileChildFibers } from "./ReactChildFiber";
 import { processUpdateQueue } from "./ReactFiberClassUpdateQueue";
 import type { Fiber } from "./ReactInternalTypes";
-import { HostRoot, HostText } from "./ReactWorkTags";
+import { HostComponent, HostRoot, HostText } from "./ReactWorkTags";
 
 /**
  * 协调子节点，判断走“挂载”流程还是 “更新”流程
@@ -67,17 +68,31 @@ function updateHostRoot(current: Fiber | null, workInProgress: Fiber) {
 }
 
 /**
- * 更新原生组件类型的fiber
- * @param current
- * @param workInProgress
+ * 更新原生组件(div,span ...)类型的fiber
+ * @param current 当前挂载的fiber
+ * @param workInProgress WIP fiber
+ * @return 返回子fiber
  */
-// function updateHostComponent(current: Fiber | null, workInProgress: Fiber) {}
+function updateHostComponent(current: Fiber | null, workInProgress: Fiber) {
+  const type = workInProgress.type;
+  const nextProps = workInProgress.pendingProps;
+
+  let nextChildren = nextProps.children;
+  const isDirectTextChild = shouldSetTextContent(type, nextProps);
+  // 优化处理，子节点是文本节点的情况下，就不继续处理了
+  if (isDirectTextChild) {
+    nextChildren = null;
+  }
+
+  reconcileChildren(current, workInProgress, nextChildren);
+  return workInProgress.child;
+}
 
 /**
  * 更新文本类型的fiber
- * @param current
- * @param workInProgress
- * @returns
+ * @param current 当前挂载的fiber
+ * @param workInProgress WIP fiber
+ * @returns null
  */
 function updateHostText(current: Fiber | null, workInProgress: Fiber) {
   if (current !== null) {
@@ -116,8 +131,8 @@ function beginWork(current: Fiber | null, workInProgress: Fiber): Fiber | null {
     //   );
     case HostRoot:
       return updateHostRoot(current, workInProgress);
-    // case HostComponent:
-    //   return updateHostComponent(current, workInProgress);
+    case HostComponent:
+      return updateHostComponent(current, workInProgress);
     case HostText:
       return updateHostText(current, workInProgress);
   }

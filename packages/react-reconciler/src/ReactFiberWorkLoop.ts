@@ -80,4 +80,5 @@ function performUnitOfWork(unitOfWork: Fiber) {
 function completeUnitOfWork(unitOfWork: Fiber) {
   const completeWork = unitOfWork;
   console.log("[ completeWork ] >", completeWork);
+  workInProgress = null;
 }

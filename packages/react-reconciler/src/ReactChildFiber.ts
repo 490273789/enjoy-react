@@ -7,8 +7,22 @@ import {
   createFiberFromText,
   createWorkInProgress,
 } from "./ReactFiber";
-// import isArray from "shared/isArray";
+import isArray from "shared/isArray";
 import { HostText } from "./ReactWorkTags";
+
+function throwOnInvalidObjectType(newChild: object) {
+  const childString = Object.prototype.toString.call(newChild);
+
+  throw new Error(
+    `Objects are not valid as a React child (found: ${
+      childString === "[object Object]"
+        ? "object with keys {" + Object.keys(newChild).join(", ") + "}"
+        : childString
+    }). ` +
+      "If you meant to render a collection of children, use an array " +
+      "instead.",
+  );
+}
 
 /**
  * 挂载 or 协调 子节点
@@ -67,6 +81,18 @@ function ChildReconciler(shouldTrackSideEffects: boolean) {
     return clone;
   }
 
+  function placeChild(
+    newFiber: Fiber,
+    lastPlacedIndex: number,
+    newIdx: number,
+  ) {
+    newFiber.index = newIdx;
+    if (!shouldTrackSideEffects) {
+      return lastPlacedIndex;
+    }
+    return lastPlacedIndex;
+  }
+
   /**
    * 给当前fiber添加Placement（插入）操作的 标识
    * @param newFiber 新的Fiber
@@ -80,49 +106,104 @@ function ChildReconciler(shouldTrackSideEffects: boolean) {
     return newFiber;
   }
 
-  /**
-   * 处理单节点
-   * @param returnFiber WIP fiber
-   * @param currentFirstChild 已挂载fiber的第一个子fiber
-   * @param element workInProcess的子ReactElement
-   */
-  function reconcileSingleElement(
-    returnFiber: Fiber,
-    currentFirstChild: Fiber | null,
-    element: ReactElement,
-  ) {
-    const key = element.key;
-    let child = currentFirstChild;
-    while (child !== null) {
-      if (child.key === key) {
-        const elementType = element.type;
-        if (
-          child.elementType === elementType ||
-          (typeof elementType === "object" && elementType !== null)
-        ) {
-          // key相同 elementType相同，并且是单节点的情况，可以删除掉其他的兄弟节点了
-          deleteRemainingChildren(returnFiber, child.sibling);
-          // 复用fiber，处理结束
-          const existing = useFiber(child, element.props);
-          existing.return = returnFiber;
-          return existing;
-        }
-        // 没有匹配到则直接删除所有的子节点
-        deleteRemainingChildren(returnFiber, child);
-        break; // key相同，则不需要继续根据key匹配了，直接退出循环即可
-      } else {
-        // key不同，先删除当前这个child，再继续比较兄弟节点
-        deleteChild(returnFiber, child);
-      }
-      child = child.sibling;
+  function createChild(returnFiber: Fiber, newChild: any) {
+    if (
+      (typeof newChild === "string" && newChild !== "") ||
+      typeof newChild === "number"
+    ) {
+      // Text nodes don't have keys. If the previous node is implicitly keyed
+      // we can continue to replace it without aborting even if it is not a text
+      // node.
+      const created = createFiberFromText("" + newChild);
+      created.return = returnFiber;
+      return created;
     }
-    const created = createFiberFromElement(element);
-    created.return = returnFiber;
-    return created;
+
+    if (typeof newChild === "object" && newChild !== null) {
+      switch (newChild.$$typeof) {
+        case REACT_ELEMENT_TYPE: {
+          const created = createFiberFromElement(newChild);
+          created.return = returnFiber;
+          return created;
+        }
+      }
+      throwOnInvalidObjectType(newChild);
+    }
+    return null;
   }
 
   /**
-   * 处理单文本节点
+   * DOM-DIFF
+   * 当有多个子节点
+   * 1. 初始化：创建子fiber，返回第一个子fiber
+   * 2. 更新：将新的ReactElement与当前的子Fiber进行对比
+   * @param returnFiber WIP fiber
+   * @param currentFirstChild 当前已挂在fiber的子fiber
+   * @param newChildren 将要挂载的ReactElement数组
+   * @return 子fiber链表
+   */
+  function reconcileChildrenArray(
+    returnFiber: Fiber,
+    currentFirstChild: Fiber | null,
+    newChildren: any[],
+  ) {
+    // This algorithm can't optimize by searching from both ends since we
+    // don't have backpointers on fibers. I'm trying to see how far we can get
+    // with that model. If it ends up not being worth the tradeoffs, we can
+    // add it later.
+    // Even with a two ended optimization, we'd want to optimize for the case
+    // where there are few changes and brute force the comparison instead of
+    // going for the Map. It'd like to explore hitting that path first in
+    // forward-only mode and only go for the Map once we notice that we need
+    // lots of look ahead. This doesn't handle reversal as well as two ended
+    // search but that's unusual. Besides, for the two ended optimization to
+    // work on Iterables, we'd need to copy the whole set.
+    // In this first iteration, we'll just live with hitting the bad case
+    // (adding everything to a Map) in for every insert/move.
+    // If you change this code, also update reconcileChildrenIterator() which
+    // uses the same algorithm.
+    let resultingFirstChild: Fiber | null = null; // 第一个子fiber
+    let previousNewFiber: Fiber | null = null;
+
+    let oldFiber = currentFirstChild;
+    let lastPlacedIndex = 0;
+    let newIdx = 0;
+    let nextOldFiber: Fiber | null = null;
+
+    for (; oldFiber !== null && newIdx < newChildren.length; newIdx++) {
+      if (oldFiber.index > newIdx) {
+        nextOldFiber = oldFiber;
+        oldFiber = null;
+      } else {
+        nextOldFiber = oldFiber.sibling;
+        console.log("[ nextOldFiber ] >", nextOldFiber);
+      }
+    }
+
+    if (oldFiber === null) {
+      // If we don't have any more existing children we can choose a fast path
+      // since the rest will all be insertions.
+      for (; newIdx < newChildren.length; newIdx++) {
+        const newFiber = createChild(returnFiber, newChildren[newIdx]);
+        if (newFiber === null) continue;
+        lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
+        if (previousNewFiber === null) {
+          resultingFirstChild = newFiber;
+        } else {
+          previousNewFiber.sibling = newFiber;
+        }
+        previousNewFiber = newFiber;
+      }
+      return resultingFirstChild;
+    }
+    return currentFirstChild;
+  }
+
+  /**
+   * 处理 单个 文本节点 DOM-DIFF
+   * 能走到这说明是独生子，没有兄弟节点的文本节点，需要对兄弟节点进行删除标记
+   * 1.currentFirstChild是文本节点，从父节Fiber上删除他的其他兄弟节点，直接复用
+   * 2.currentFirstChild不是文本节点，删除父Fiber上的所有子节点，创建一个新的文本节点
    * @param returnFiber WIP fiber
    * @param currentFirstChild 已挂载的fiber
    * @param textContent 文本内容
@@ -153,6 +234,47 @@ function ChildReconciler(shouldTrackSideEffects: boolean) {
   }
 
   /**
+   * 处理单个Element节点 - 独生子
+   * @param returnFiber WIP fiber
+   * @param currentFirstChild 已挂载fiber的第一个子fiber
+   * @param element workInProcess的子ReactElement
+   */
+  function reconcileSingleElement(
+    returnFiber: Fiber,
+    currentFirstChild: Fiber | null,
+    element: ReactElement,
+  ) {
+    const key = element.key;
+    let child = currentFirstChild;
+    while (child !== null) {
+      if (child.key === key) {
+        const elementType = element.type;
+        if (
+          child.elementType === elementType ||
+          (typeof elementType === "object" && elementType !== null)
+        ) {
+          // 进入此方法说明找到可复用的FIber，因为是单节点，则需要删除剩余的兄弟节点
+          deleteRemainingChildren(returnFiber, child.sibling);
+          const existing = useFiber(child, element.props);
+          existing.return = returnFiber;
+          return existing;
+        }
+        // 找到了相同的key，但是类型不同，说明节点不能复用，则不需要继续diff了，直接删除剩余的子节点，退出diff流程
+        deleteRemainingChildren(returnFiber, child);
+        break;
+      } else {
+        // key不同，不能服用，先删除当前这个child，继续寻找可复用节点
+        deleteChild(returnFiber, child);
+      }
+      child = child.sibling;
+    }
+    // 走到这里说明没有可以复用的Fiber，需要创建一个新的fiber
+    const created = createFiberFromElement(element);
+    created.return = returnFiber;
+    return created;
+  }
+
+  /**
    * 协调子Fiber
    * 1. 初始化阶段，将ReactElement转化为Fiber
    * 2. 更新阶段进行DOM Diff
@@ -166,6 +288,12 @@ function ChildReconciler(shouldTrackSideEffects: boolean) {
     currentFirstChild: Fiber | null,
     newChild: any,
   ) {
+    // This function is not recursive.
+    // If the top level item is an array, we treat it as a set of children,
+    // not as a fragment. Nested arrays on the other hand will be treated as
+    // fragment nodes. Recursion happens at the normal flow.
+
+    // Handle object types
     if (typeof newChild === "object" && newChild !== null) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
@@ -174,9 +302,10 @@ function ChildReconciler(shouldTrackSideEffects: boolean) {
           );
       }
 
-      // if (isArray(newChild)) {
-      //   return reconcileChildrenArray();
-      // }
+      // 单节点的情况处理完成，剩下的是数组（还有文本节点没处理）
+      if (isArray(newChild)) {
+        return reconcileChildrenArray(returnFiber, currentFirstChild, newChild);
+      }
     }
 
     if (

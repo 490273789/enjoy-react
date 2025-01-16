@@ -48,7 +48,7 @@ export function createFiber(
   return new FiberNode(tag, pendingProps, key);
 }
 
-/** 创建跟fiber */
+/** 创建根fiber */
 export function createHostRootFiber() {
   return createFiber(HostRoot, null, null);
 }

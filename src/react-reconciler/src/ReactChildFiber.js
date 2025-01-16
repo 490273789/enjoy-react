@@ -298,7 +298,7 @@ function createChildReconciler(shouldTrackSideEffects) {
       oldFiber = nextOldFiber;
     }
 
-    // 新的虚拟DOM遍历完了，但是新的虚拟DOM还没有遍历完
+    // 老的虚拟DOM遍历完了，但是新的虚拟DOM还没有遍历完
     // 说明新的虚拟DOM比老的虚拟DOM多，需要新增fiber
     if (newIdx === newChildren.length) {
       // 删除剩下的老fiber
