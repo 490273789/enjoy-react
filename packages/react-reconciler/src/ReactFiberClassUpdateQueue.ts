@@ -1,5 +1,5 @@
 import { unsafe_markUpdateLaneFromFiberToRoot } from "./ReactFiberConcurrentUpdates";
-import { Fiber, FiberRoot } from "./ReactInternalTypes";
+import type { Fiber, FiberRoot } from "./ReactInternalTypes";
 
 export type Update = {
   tag: 0 | 1 | 2 | 3;

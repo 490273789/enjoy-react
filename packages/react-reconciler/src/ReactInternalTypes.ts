@@ -3,6 +3,7 @@ import type { RootTag } from "./ReactRootTags";
 import type { Flags } from "./ReactFiberFlags";
 import type { RefObject } from "shared/ReactTypes";
 import { WorkTag } from "./ReactWorkTags";
+
 export type Fiber = {
   // These first fields are conceptually members of an Instance. This used to
   // be split into a separate type and intersected with the other Fiber fields,

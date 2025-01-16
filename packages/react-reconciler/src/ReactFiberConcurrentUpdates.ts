@@ -1,4 +1,4 @@
-import { Fiber, FiberRoot } from "./ReactInternalTypes";
+import type { Fiber, FiberRoot } from "./ReactInternalTypes";
 import { HostRoot } from "./ReactWorkTags";
 
 /**

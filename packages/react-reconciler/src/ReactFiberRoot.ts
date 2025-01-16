@@ -1,5 +1,5 @@
 import { Container } from "ReactDOMHostConfig";
-import { FiberRoot } from "./ReactInternalTypes";
+import type { FiberRoot } from "./ReactInternalTypes";
 import { initializedUpdateQueue } from "./ReactFiberClassUpdateQueue";
 import { createHostRootFiber } from "./ReactFiber";
 

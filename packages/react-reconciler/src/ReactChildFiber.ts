@@ -1,7 +1,7 @@
 import { REACT_ELEMENT_TYPE } from "shared/ReactSymbols";
-import { Fiber } from "./ReactInternalTypes";
+import type { Fiber } from "./ReactInternalTypes";
 import { ChildDeletion, Placement } from "./ReactFiberFlags";
-import { ReactElement } from "shared/ReactElementType";
+import type { ReactElement } from "shared/ReactElementType";
 import {
   createFiberFromElement,
   createFiberFromText,

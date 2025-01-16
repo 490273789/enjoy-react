@@ -24,7 +24,7 @@ ReactDOMRoot.prototype.render = function (children: ReactNodeList) {
   const root = this._internalRoot;
   root.containerInfo.innerHTML = "";
   // 开始渲染
-  console.log("[ children ] >", children);
+  console.log("[ 执行render函数，开始渲染 ] >", children);
   updateContainer(children, root);
 };
 

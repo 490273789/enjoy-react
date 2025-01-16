@@ -1,6 +1,6 @@
 import { mountChildrenFibers, reconcileChildFibers } from "./ReactChildFiber";
 import { processUpdateQueue } from "./ReactFiberClassUpdateQueue";
-import { Fiber } from "./ReactInternalTypes";
+import type { Fiber } from "./ReactInternalTypes";
 import { HostRoot, HostText } from "./ReactWorkTags";
 
 /**
@@ -86,6 +86,12 @@ function updateHostText(current: Fiber | null, workInProgress: Fiber) {
   return null;
 }
 
+/**
+ * 深度优先遍历“递”的过程
+ * @param current
+ * @param workInProgress
+ * @returns null 或者WIP的childFiber
+ */
 function beginWork(current: Fiber | null, workInProgress: Fiber): Fiber | null {
   switch (workInProgress.tag) {
     // case IndeterminateComponent: {

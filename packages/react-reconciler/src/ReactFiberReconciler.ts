@@ -17,8 +17,8 @@ export function createContainer(containerInfo: Container): OpaqueRoot {
 }
 
 /**
- * 走更新流程
- * 1. 创建一个update，并传入更新的内容
+ * 渲染流程流程
+ * 1. 创建一个update，并传入ReactElement作为更新的内容
  * 2. 将update放入Fiber的updateQueue中
  * 3. 调度更新
  * @param element 需要更新的ReactElement
