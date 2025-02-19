@@ -5,3 +5,5 @@
 
 - 类组件监听 props的生命周期 getDerivedStateFromProps
 - 函数组件中可以使用useEffect来监听props
+
+## 调度、协调、渲染

@@ -24,4 +24,4 @@ FiberRootNode: {
 - initializedUpdateQueue - 初始化一个fiber update队列
 - createUpdate - 创建update
 - enqueueUpdate - 将update放入队列中
-- processUpdateQueue - 使用update队列， 更新fiber的memoizedStates
+- processUpdateQueue - 执行update队列， 更新fiber的memoizedStates
