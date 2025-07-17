@@ -5,7 +5,7 @@ import generatePackageJson from "rollup-plugin-generate-package-json";
  * name - 包名
  * main - 入口文件
  */
-const { name, main } = getPackageJson("react");
+const { name, module } = getPackageJson("react");
 
 // 获取某个包的路径
 const pkgPath = resolvePkgPath(name);
@@ -14,7 +14,7 @@ const pkgPath = resolvePkgPath(name);
 const pkgDistPath = resolvePkgPath(name, true);
 
 const reactPkg = {
-  input: `${pkgPath}/${main}`,
+  input: `${pkgPath}/${module}`,
   output: {
     file: `${pkgDistPath}/index.js`,
     name: "React",
