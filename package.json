@@ -11,10 +11,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/plugin-transform-react-jsx": "^7.25.9",
-    "@vitejs/plugin-react-swc": "^3.7.2",
-    "prettier": "^3.4.2",
-    "vite": "^6.0.3"
+    "@babel/core": "^7.28.0",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
+    "@vitejs/plugin-react-swc": "^3.10.2",
+    "prettier": "^3.6.2",
+    "vite": "^7.0.4"
   }
 }
