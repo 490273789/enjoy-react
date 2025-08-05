@@ -51,7 +51,7 @@ function reconcileChildren(
 // ) {}
 
 /**
- * 更新根fiber
+ * 更新 root fiber
  * @param current
  * @param workInProgress
  */
