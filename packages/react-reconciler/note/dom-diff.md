@@ -4,20 +4,24 @@
 
 - 传统 diff 算法其时间复杂度最优解是 O(n^3)，那么如果有 1000 个节点，则一次 diff 就将进行 10 亿次比较，这显然无法达到高性能的要求。而 React 通过大胆的假设，并基于假设提出相关策略，成功的将 O(n^3) 复杂度的问题转化为 O(n) 复杂度的问题。
 
+## DOM DIFF的三个假设
+
+- 同级元素进行比较
+- 不同的type对应不同的元素：type不同直接删除
+- 可以通过key来复用节点
+
 ## 单节点diff
 
+- 新节点只有一个，旧节点可能有多个
+
+1. 比较节点的type是否相同
+
 ## 多节点diff
-
-## DOM DIFF的规则
-
-- 只对同级元素进行比较
-- 不同的类型对应不同的元素：新旧节点的Type不同，直接删除旧节点机器子孙节点，创建子节点
-- 可以通过key来复用节点
 
 ### diff 实现
 
 - 同级比较
-  - 单节点diff：多节点diff：newChild类型为object、number、string，代表同级只有一个节点
+  - 单节点diff：newChild类型为object、number、string，代表同级只有一个节点
   - 多节点diff：newChild类型为Array，同级有多个节点
 
 #### 单节点diff
@@ -57,7 +61,6 @@
    - newChildren遍历完成、oldFiber遍历完成
    - newChildren遍历完成、oldFiber没有遍历完成
    - newChildren没有遍历完成、oldFiber遍历完成
-   - newChildren和oldFiber都没有遍历完成
 
 ##### 第二轮遍历
 
@@ -72,9 +75,10 @@
 
 ##### 第三轮遍历
 
-> 移动的思想：如果当前节点在集合种的位置，比比老节点在集合中的位置靠前的话，是不会影响后续节点的操作的，不动。
+> 移动的思想：如果当前节点在集合中的位置，比老节点在集合中的位置靠前的话，是不会影响后续节点的操作的，不动。
 
-- 遍历新节点，每个节点有两个index，一个表示它在就节点上的位置oldIndex，一个表示表示新节点在遍历中找到旧节点的位置maxIndex
+- lastPlaceIndex：当前遍历到最后一个可复用的 Fiber 在旧节点中的索引位置，初始为0，这个位置的复用是不用移动的，如果后续可复用的就节点的索引小于或等于这个索引，那么就需要这个旧的节点向右移动，移动后这个lastPlaceIndex值更新为这个可复用节点的索引
+- 遍历新节点，每个节点有两个index，一个表示它在旧节点上的位置oldIndex，一个表示表示新节点在遍历中找到旧节点的位置maxIndex
   - 当oldIndex > maxIndex，将maxIndex = oldIndex
   - 当oldIndex === maxIndex， 不操作
   - 当oldIndex < maxIndex, 将节点移动到maxIndex的位置
@@ -82,18 +86,21 @@
 ### 对对对
 
 1. 第一轮遍历
-
-   - 如果key不通则直接结束本轮循环
+   - 如果key不同则直接结束本轮循环
    - new Children 或oldFiber 遍历完，结束本次循环
    - key相同而type不同，标记老的oldFiber为删除，继续循环
    - key相同，type也相同，则可以复用老oldFiber节点，继续循环
 
 2. 第二轮遍历
-
-   - 遍历完newChildren而oldFiber还有，剩下所有的oldFiber标记为删除，DIFF结束
-   - oldFiber遍历完，而newChildren还有，将剩下的newChildren标记为插入，DIFF结束
-   - newChildren和oldFiber都同时遍历完成，diff结束
-   - newChildren和oldFiber都没有完成，则进行节点移动的逻辑
+   - newChildren遍历完 而 oldFiber还有，剩下所有的oldFiber标记为删除，DIFF结束。
+   - newChildren还有 而 oldFiber遍历完，将剩下的newChildren标记为插入，DIFF结束。
+   - newChildren和oldFiber都同时遍历完成，diff结束。
+   - newChildren和oldFiber都没有完成，则进行节点移动的逻辑。
 
 3. 第三轮遍历
    - 处理节点移动的情况
+   - 设置两个指针，oldIndex 老节点的位置
+   - lastPlaceIndex，新节点复用的老节点的位置
+   - 如果当前复用oldIndex < lastPlaceIndex，则当前复用的老节点需要向右移动，同时 lastPlaceIndex = oldIndex
+   - 如果当前复用oldIndex > lastPlaceIndex，怎当前复用的老节点不需要移动，同时lastPlaceIndex = oldIndex
+   - 如果oldIndex === lastPlaceIndex，无需操作
