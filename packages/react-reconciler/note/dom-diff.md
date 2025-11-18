@@ -78,10 +78,10 @@
 > 移动的思想：如果当前节点在集合中的位置，比老节点在集合中的位置靠前的话，是不会影响后续节点的操作的，不动。
 
 - lastPlaceIndex：当前遍历到最后一个可复用的 Fiber 在旧节点中的索引位置，初始为0，这个位置的复用是不用移动的，如果后续可复用的就节点的索引小于或等于这个索引，那么就需要这个旧的节点向右移动，移动后这个lastPlaceIndex值更新为这个可复用节点的索引
-- 遍历新节点，每个节点有两个index，一个表示它在旧节点上的位置oldIndex，一个表示表示新节点在遍历中找到旧节点的位置maxIndex
-  - 当oldIndex > maxIndex，将maxIndex = oldIndex
-  - 当oldIndex === maxIndex， 不操作
-  - 当oldIndex < maxIndex, 将节点移动到maxIndex的位置
+- 遍历新节点，每个节点有两个index，一个表示它在旧节点上的位置oldIndex，一个表示表示新节点在遍历中找到旧节点的位置lastPlaceIndex
+  - 当oldIndex > lastPlaceIndex，将lastPlaceIndex = oldIndex
+  - 当oldIndex === lastPlaceIndex， 不操作
+  - 当oldIndex < lastPlaceIndex, 将节点移动到lastPlaceIndex的位置
 
 ### 对对对
 
@@ -101,6 +101,6 @@
    - 处理节点移动的情况
    - 设置两个指针，oldIndex 老节点的位置
    - lastPlaceIndex，新节点复用的老节点的位置
-   - 如果当前复用oldIndex < lastPlaceIndex，则当前复用的老节点需要向右移动，同时 lastPlaceIndex = oldIndex
+   - 如果当前复用oldIndex < lastPlaceIndex，则当前复用的老节点需要向右移动，同时lastPlaceIndex = oldIndex
    - 如果当前复用oldIndex > lastPlaceIndex，怎当前复用的老节点不需要移动，同时lastPlaceIndex = oldIndex
    - 如果oldIndex === lastPlaceIndex，无需操作

@@ -253,7 +253,7 @@ function ChildReconciler(shouldTrackSideEffects: boolean) {
           child.elementType === elementType ||
           (typeof elementType === "object" && elementType !== null)
         ) {
-          // 进入此方法说明找到可复用的FIber，因为是单节点，则需要删除剩余的兄弟节点
+          // 进入此方法说明找到可复用的Fiber，因为是单节点，则需要删除剩余的兄弟节点
           deleteRemainingChildren(returnFiber, child.sibling);
           const existing = useFiber(child, element.props);
           existing.return = returnFiber;
